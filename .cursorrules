@@ -1,5 +1,16 @@
 # Cursor AI Rules for Shopify Pricing App
 
+## 🚨 MANDATORY FIRST STEP
+Before making ANY changes, I must:
+1. **Read and acknowledge these rules** - Confirm I understand the requirements
+2. **Search existing codebase** for similar functionality before writing new code
+3. **Check /shared/** for reusable components and utilities
+4. **Plan implementation approach** - Define the solution before coding
+5. **Get approval** for any rule deviations before proceeding
+6. **Follow hybrid structure** religiously for all new code
+
+**I will NOT make changes without following these steps first.**
+
 ## 🎯 Core Mission
 Build an efficient, attractive, user-friendly, and powerful smart pricing software for Shopify stores that directly increases user revenue.
 
@@ -54,6 +65,9 @@ src/
 - Follow consistent naming conventions (camelCase, PascalCase)
 - Add JSDoc comments for complex functions
 - Keep functions under 50 lines when possible
+- Add "use client" directive to components using React hooks
+- Use Server Components for data fetching and static content
+- Use Client Components for interactive features and state management
 
 ## 🔄 Code Reuse & Modification
 
@@ -88,7 +102,10 @@ src/
 - Trigger.dev (background jobs)
 
 ### Integration Rules
-- Use Next.js patterns (Server Components, Server Actions)
+- Use Next.js patterns (Server Components by default, Client Components when needed)
+- Mark components with "use client" when using hooks, state, or browser APIs
+- Prefer Server Components for static content and data fetching
+- Use Client Components for interactive features and state management
 - Leverage React 19 features (concurrent rendering)
 - Follow Supabase best practices
 - Use Trigger.dev for async operations

@@ -1,17 +1,17 @@
 // Shared utilities and components
 // This file provides clean imports for shared resources
 
-// Components
-export * from './components'
+// Components will be exported here as they are created
+// export * from './components'
 
-// Hooks
-export * from './hooks'
+// Hooks will be exported here as they are created
+// export * from './hooks'
 
-// Utilities
-export * from './lib'
+// Utilities will be exported here as they are created
+// export * from './lib'
 
-// Types
-export * from './types'
+// Types will be exported here as they are created
+// export * from './types'
 
-// API
-export * from './api'
+// API will be exported here as they are created
+// export * from './api'
