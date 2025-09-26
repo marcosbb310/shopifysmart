@@ -1,0 +1,94 @@
+{
+  "cursor.ai.rules": {
+    "enabled": true,
+    "rulesFile": ".cursorrules",
+    "strictMode": true
+  },
+  "cursor.ai.context": {
+    "includePatterns": [
+      "src/**/*.{ts,tsx,js,jsx}",
+      "*.{ts,tsx,js,jsx}",
+      "*.json",
+      "*.md"
+    ],
+    "excludePatterns": [
+      "node_modules/**",
+      ".next/**",
+      "dist/**",
+      "build/**",
+      "**/*.test.*",
+      "**/*.spec.*"
+    ],
+    "maxContextLength": 50000
+  },
+  "cursor.ai.features": {
+    "codeCompletion": true,
+    "codeGeneration": true,
+    "codeExplanation": true,
+    "codeRefactoring": true,
+    "bugDetection": true,
+    "performanceOptimization": true
+  },
+  "cursor.ai.prompts": {
+    "defaultSystemPrompt": "You are an expert React/Next.js developer working on a Shopify pricing optimization app. Follow the rules in .cursorrules strictly. Always prioritize code reuse, performance, and user experience. Every feature must directly increase store revenue.",
+    "codeReviewPrompt": "Review this code for: 1) Adherence to hybrid structure, 2) TypeScript best practices, 3) Performance optimization, 4) Error handling, 5) Code reuse opportunities",
+    "refactoringPrompt": "Refactor this code to: 1) Follow hybrid structure, 2) Improve performance, 3) Enhance type safety, 4) Reduce duplication, 5) Improve maintainability"
+  },
+  "cursor.ai.constraints": {
+    "maxFunctionLength": 50,
+    "maxFileLength": 300,
+    "requireTypeScript": true,
+    "requireErrorHandling": true,
+    "requirePerformanceOptimization": true,
+    "forbidAnyTypes": true,
+    "requireJSDoc": true
+  },
+  "cursor.ai.workflow": {
+    "beforeCodeGeneration": [
+      "Search existing codebase for similar functionality",
+      "Check /shared for reusable utilities",
+      "Plan implementation following hybrid structure",
+      "Consider performance implications"
+    ],
+    "afterCodeGeneration": [
+      "Review code for rule compliance",
+      "Check for type safety",
+      "Verify error handling",
+      "Test functionality",
+      "Update documentation"
+    ]
+  },
+  "cursor.ai.quality": {
+    "minCodeCoverage": 80,
+    "minPerformanceScore": 90,
+    "maxCyclomaticComplexity": 10,
+    "maxCognitiveComplexity": 15,
+    "requireAccessibility": true,
+    "requireMobileOptimization": true
+  },
+  "cursor.ai.integrations": {
+    "eslint": {
+      "enabled": true,
+      "configFile": "eslint.config.mjs"
+    },
+    "prettier": {
+      "enabled": true,
+      "configFile": ".prettierrc"
+    },
+    "typescript": {
+      "enabled": true,
+      "configFile": "tsconfig.json"
+    },
+    "tailwind": {
+      "enabled": true,
+      "configFile": "tailwind.config.js"
+    }
+  },
+  "cursor.ai.monitoring": {
+    "trackPerformance": true,
+    "trackUserBehavior": true,
+    "logImportantEvents": true,
+    "setUpAlerts": true,
+    "measureFeatureImpact": true
+  }
+}

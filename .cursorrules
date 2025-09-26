@@ -1,0 +1,260 @@
+# Cursor AI Rules for Shopify Pricing App
+
+## 🎯 Core Mission
+Build an efficient, attractive, user-friendly, and powerful smart pricing software for Shopify stores that directly increases user revenue.
+
+## 🏗️ Codebase Organization
+
+### Hybrid Structure (Feature-Based + Shared)
+```
+src/
+├── app/                    # Next.js App Router
+├── features/              # Feature-based modules
+│   ├── pricing/
+│   │   ├── components/    # Feature-specific components
+│   │   ├── hooks/         # Feature-specific hooks
+│   │   ├── lib/          # Feature-specific utilities
+│   │   ├── types/        # Feature-specific types
+│   │   └── index.ts      # Feature exports
+│   └── products/
+├── shared/               # Shared across features
+│   ├── components/       # Reusable UI components
+│   ├── hooks/           # Global hooks
+│   ├── lib/             # Utilities, constants, configs
+│   ├── types/           # Global types
+│   └── api/             # API clients, endpoints
+├── components/          # shadcn/ui components (keep as-is)
+│   └── ui/
+└── lib/                 # Global utilities (keep existing)
+```
+
+### Organization Rules
+- Each feature is self-contained with clear boundaries
+- Shared utilities go in `/shared` to prevent duplication
+- Use index files for clean exports: `import { Component } from '@/features/pricing'`
+- Keep feature boundaries clear and avoid circular dependencies
+- Follow the hybrid structure religiously
+
+## 🔧 Code Quality & Error Prevention
+
+### Type Safety
+- Use TypeScript strictly - no `any` types
+- Define interfaces for all data structures
+- Use Zod for runtime validation
+- Implement proper type guards and assertions
+
+### Error Handling
+- Wrap all async operations in try/catch blocks
+- Use error boundaries for React components
+- Provide clear, actionable error messages
+- Log errors with context for debugging
+
+### Code Standards
+- Use ESLint and Prettier for consistent formatting
+- Follow consistent naming conventions (camelCase, PascalCase)
+- Add JSDoc comments for complex functions
+- Keep functions under 50 lines when possible
+
+## 🔄 Code Reuse & Modification
+
+### Before Writing New Code
+- ALWAYS search existing codebase for similar functionality
+- Check `/shared` for reusable utilities
+- Review existing components for extension possibilities
+- Prefer composition over inheritance
+
+### Modification Strategy
+- MODIFY EXISTING CODE when possible instead of creating new
+- Add parameters to existing functions for new behavior
+- Use feature flags for gradual rollouts
+- Maintain backward compatibility
+
+### Code Organization
+- Follow hybrid structure religiously
+- Use index files for clean exports
+- Keep feature boundaries clear
+- Avoid circular dependencies
+
+## 🛠️ Tech Stack Compliance
+
+### Required Technologies
+- Next.js 15+ (App Router)
+- React 19+ (Server Components)
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
+- Supabase (database, auth)
+- GitHub (version control)
+- Trigger.dev (background jobs)
+
+### Integration Rules
+- Use Next.js patterns (Server Components, Server Actions)
+- Leverage React 19 features (concurrent rendering)
+- Follow Supabase best practices
+- Use Trigger.dev for async operations
+
+## 🎯 Feature Development
+
+### Feature Requirements
+- MUST directly increase store revenue
+- MUST provide measurable value
+- MUST be essential, not nice-to-have
+- MUST have clear success metrics
+
+### Development Process
+- Define problem and solution clearly
+- Design user experience first
+- Implement with performance in mind
+- Test thoroughly before deployment
+- Measure impact after deployment
+
+## ⚡ Performance & User Experience
+
+### Performance Rules
+- Optimize for Core Web Vitals
+- Use React.memo for expensive components
+- Implement proper loading states
+- Use Next.js Image optimization
+- Minimize bundle size
+
+### UX Standards
+- Mobile-first design approach
+- Accessible (WCAG 2.1 compliance)
+- Fast loading (< 3 seconds)
+- Intuitive navigation
+- Clear feedback for user actions
+
+## 🧪 Testing & Quality Assurance
+
+### Testing Strategy
+- Unit tests for utility functions
+- Integration tests for features
+- E2E tests for critical user flows
+- Performance testing for calculations
+
+### Quality Gates
+- All tests pass before merge
+- Code review required
+- Performance benchmarks met
+- Accessibility standards met
+
+## 📚 Documentation & Maintenance
+
+### Documentation
+- README for each feature
+- API documentation
+- Component documentation
+- Deployment instructions
+
+### Maintenance
+- Regular dependency updates
+- Security vulnerability scanning
+- Performance monitoring
+- User feedback integration
+
+## 🔒 Security
+
+### Security Rules
+- Validate all inputs
+- Use environment variables for secrets
+- Implement proper authentication
+- Follow OWASP guidelines
+
+## 📈 Scalability
+
+### Scalability Rules
+- Design for growth
+- Use efficient data structures
+- Implement proper caching
+- Monitor resource usage
+
+## 📊 Monitoring
+
+### Monitoring Rules
+- Track user behavior
+- Monitor performance metrics
+- Log important events
+- Set up alerts for issues
+
+## 🔄 Development Workflow
+
+### Before Starting
+- Understand the requirement completely
+- Check existing code for similar functionality
+- Plan the implementation approach
+- Consider edge cases and error scenarios
+
+### During Development
+- Follow hybrid structure religiously
+- Write clean, readable code
+- Test as you go
+- Document complex logic
+
+### After Completion
+- Review the code thoroughly
+- Test all functionality
+- Update documentation
+- Deploy and monitor
+
+## 📊 Success Metrics
+
+### Technical Metrics
+- Code coverage > 80%
+- Performance score > 90
+- Zero critical bugs
+- 100% accessibility compliance
+
+### Business Metrics
+- User engagement increase
+- Revenue impact measurable
+- User satisfaction high
+- Feature adoption rate > 70%
+
+## 🚨 Critical Rules Summary
+
+1. ALWAYS search existing code before writing new code
+2. MODIFY existing code when possible instead of creating new
+3. FOLLOW hybrid structure religiously
+4. USE only essential features that increase revenue
+5. MAINTAIN strict TypeScript and error handling
+6. OPTIMIZE for performance and user experience
+7. TEST thoroughly before deployment
+8. DOCUMENT everything clearly
+9. MONITOR performance and user behavior
+10. MEASURE impact of every feature
+
+## 🔄 Rule Flexibility & Improvement
+
+### When Rules Can Be Deviated From
+- Technical necessity - rule conflicts with technical requirements
+- Performance optimization - rule hurts performance
+- Security concerns - rule creates vulnerabilities
+- User experience - rule degrades UX
+- Business impact - rule reduces revenue potential
+
+### Process for Rule Deviations
+1. **Identify the conflict** - explain why the rule doesn't fit
+2. **Propose alternative** - suggest a better approach
+3. **Explain benefits** - performance, security, UX, or business impact
+4. **Get approval** - confirm before proceeding
+5. **Update rules** - document the change in .cursorrules
+
+### Required Communication
+- **ALWAYS** tell the user before proceeding with any deviation
+- **ALWAYS** provide detailed reasoning for why the deviation is better
+- **ALWAYS** explain the benefits and potential risks
+- **ALWAYS** get explicit approval before proceeding
+- **ALWAYS** offer the choice to proceed with deviation or follow rules
+
+### Examples of Acceptable Deviations
+- Performance: Skip React.memo if it adds overhead
+- Security: Add extra validation beyond rule requirements
+- UX: Prioritize user experience over strict structure
+- Business: Focus on revenue impact over code purity
+
+### Core Principle
+Rules are guidelines to help build better software. If a rule conflicts with the goal of making Shopify store owners more money, we should adapt it. The user has final authority on all rule deviations.
+
+---
+
+**Remember: Every line of code should serve the goal of making Shopify store owners more money.**
