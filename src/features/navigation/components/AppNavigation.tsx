@@ -20,7 +20,6 @@ import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard,
   Package,
-  TrendingUp,
   BarChart3,
   Settings,
   Target,
@@ -52,19 +51,6 @@ const navigationItems = [
         description: "Manage products and pricing",
         badge: "8",
       },
-      {
-        title: "Strategies",
-        href: "/strategies",
-        icon: Target,
-        description: "Pricing rules and automation",
-      },
-      {
-        title: "Recommendations",
-        href: "/recommendations",
-        icon: TrendingUp,
-        description: "AI-powered price suggestions",
-        badge: "5",
-      },
     ],
   },
   {
@@ -72,13 +58,13 @@ const navigationItems = [
     items: [
       {
         title: "Performance",
-        href: "/analytics",
+        href: "/performance",
         icon: BarChart3,
         description: "Revenue and pricing analytics",
       },
       {
-        title: "Reports",
-        href: "/reports",
+        title: "History",
+        href: "/history",
         icon: FileText,
         description: "Detailed performance reports",
       },
@@ -144,7 +130,7 @@ export function AppNavigation() {
                         <Link href={item.href}>
                           <Icon className="w-4 h-4" />
                           <span>{item.title}</span>
-                          {item.badge && (
+                          {'badge' in item && item.badge && (
                             <SidebarMenuBadge>
                               {item.badge}
                             </SidebarMenuBadge>

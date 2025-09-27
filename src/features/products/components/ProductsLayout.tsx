@@ -6,6 +6,7 @@ import { ProductFilters } from "./ProductFilters";
 import { BulkActions } from "./BulkActions";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import {
   Popover,
   PopoverContent,
@@ -17,23 +18,38 @@ import {
   List, 
   Download,
   Upload,
-  Settings
+  Settings,
+  Zap
 } from "lucide-react";
 import { Product, PricingRecommendation } from "../../pricing/types";
 
 interface ProductsLayoutProps {
   products: Product[];
   recommendations?: PricingRecommendation[];
+  globalSmartPricing: boolean;
   onPriceUpdate: (productId: string, newPrice: number) => void;
+  onCostUpdate: (productId: string, newCost: number) => void;
+  onBasePriceUpdate: (productId: string, newBasePrice: number) => void;
+  onMaxPriceUpdate: (productId: string, newMaxPrice: number) => void;
+  onSmartPricingToggle: (productId: string, enabled: boolean) => void;
+  onGlobalSmartPricingToggle: (enabled: boolean) => void;
   onBulkUpdate: (productIds: string[], priceChange: number, type: 'percentage' | 'fixed') => void;
+  onBulkPricingUpdate: (field: string, type: 'percentage' | 'fixed', value: number) => void;
   onBulkApplyRecommendations: (productIds: string[]) => void;
 }
 
 export function ProductsLayout({ 
   products, 
   recommendations = [], 
+  globalSmartPricing,
   onPriceUpdate, 
+  onCostUpdate,
+  onBasePriceUpdate,
+  onMaxPriceUpdate,
+  onSmartPricingToggle,
+  onGlobalSmartPricingToggle,
   onBulkUpdate,
+  onBulkPricingUpdate,
   onBulkApplyRecommendations 
 }: ProductsLayoutProps) {
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
@@ -42,7 +58,7 @@ export function ProductsLayout({
   // Filter states
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000000]);
   const [inventoryRange, setInventoryRange] = useState<[number, number]>([0, 1000]);
   const [showLowStock, setShowLowStock] = useState(false);
   const [showRecommendations, setShowRecommendations] = useState(true);
@@ -58,10 +74,32 @@ export function ProductsLayout({
     const matchesPrice = product.currentPrice >= priceRange[0] && product.currentPrice <= priceRange[1];
     const matchesInventory = product.inventory >= inventoryRange[0] && product.inventory <= inventoryRange[1];
     const matchesLowStock = !showLowStock || product.inventory < 50;
-    const matchesRecommendations = !showRecommendations || recommendations.some(r => r.productId === product.id);
+    // Temporarily disable recommendations filter to show all products
+    const matchesRecommendations = true;
+    
+    // Debug logging
+    if (product.title === 'mugg') {
+      console.log('Mugg product filtering:', {
+        title: product.title,
+        currentPrice: product.currentPrice,
+        priceRange,
+        matchesPrice,
+        matchesCategory,
+        matchesTags,
+        matchesInventory,
+        matchesLowStock,
+        matchesRecommendations,
+        finalMatch: matchesCategory && matchesTags && matchesPrice && matchesInventory && matchesLowStock && matchesRecommendations
+      });
+    }
     
     return matchesCategory && matchesTags && matchesPrice && matchesInventory && matchesLowStock && matchesRecommendations;
   });
+
+  // Debug: Log product counts
+  console.log('ProductsLayout - Total products:', products.length);
+  console.log('ProductsLayout - Filtered products:', filteredProducts.length);
+  console.log('ProductsLayout - Product titles:', products.map(p => p.title));
 
   const handleProductSelection = (productId: string, selected: boolean) => {
     if (selected) {
@@ -102,44 +140,55 @@ export function ProductsLayout({
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <div className="max-w-7xl mx-auto p-6">
         {/* Header */}
-        <div className="flex flex-col lg:flex-row gap-6 mb-8">
+        <div className="flex flex-col lg:flex-row gap-4 mb-6">
           <div className="flex-1">
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-1">
               Products & Pricing
             </h1>
-            <p className="text-slate-600 dark:text-slate-400">
+            <p className="text-slate-600 dark:text-slate-400 text-sm">
               Manage your product catalog and optimize pricing with AI-powered recommendations
             </p>
           </div>
           
-          <div className="flex items-center space-x-3">
-            <Badge variant="secondary" className="bg-slate-100 dark:bg-slate-800">
+          <div className="flex items-center space-x-2 flex-wrap gap-2">
+            <Badge variant="secondary" className="bg-slate-100 dark:bg-slate-800 text-xs">
               {filteredProducts.length} products
             </Badge>
+            <div className="flex items-center space-x-2 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 px-3 py-1.5 rounded-lg border border-emerald-200 dark:border-emerald-800">
+              <Zap className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              <span className="text-sm font-medium text-emerald-900 dark:text-emerald-100">
+                Smart Pricing
+              </span>
+              <Switch
+                checked={globalSmartPricing}
+                onCheckedChange={onGlobalSmartPricingToggle}
+                className="data-[state=checked]:bg-emerald-600"
+              />
+            </div>
             <Button variant="outline" size="sm">
-              <Download className="w-4 h-4 mr-2" />
+              <Download className="w-4 h-4 mr-1" />
               Export
             </Button>
             <Button variant="outline" size="sm">
-              <Upload className="w-4 h-4 mr-2" />
+              <Upload className="w-4 h-4 mr-1" />
               Import
             </Button>
             <Button variant="outline" size="sm">
-              <Settings className="w-4 h-4 mr-2" />
+              <Settings className="w-4 h-4 mr-1" />
               Settings
             </Button>
           </div>
         </div>
 
         {/* Controls */}
-        <div className="flex flex-col lg:flex-row gap-6 mb-6">
-          <div className="flex items-center space-x-3">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
+          <div className="flex items-center space-x-2">
             <Button
               variant={viewMode === 'list' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setViewMode('list')}
             >
-              <List className="w-4 h-4 mr-2" />
+              <List className="w-4 h-4 mr-1" />
               List
             </Button>
             <Button
@@ -147,13 +196,13 @@ export function ProductsLayout({
               size="sm"
               onClick={() => setViewMode('grid')}
             >
-              <Grid className="w-4 h-4 mr-2" />
+              <Grid className="w-4 h-4 mr-1" />
               Grid
             </Button>
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="outline" size="sm">
-                  <Filter className="w-4 h-4 mr-2" />
+                  <Filter className="w-4 h-4 mr-1" />
                   Filters
                 </Button>
               </PopoverTrigger>
@@ -180,7 +229,7 @@ export function ProductsLayout({
           </div>
 
           {filteredProducts.length > 0 && (
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2">
               <Button
                 variant="outline"
                 size="sm"
@@ -203,6 +252,7 @@ export function ProductsLayout({
             <BulkActions
               selectedProducts={selectedProducts}
               onBulkPriceUpdate={handleBulkPriceUpdate}
+              onBulkPricingUpdate={onBulkPricingUpdate}
               onBulkApplyRecommendations={handleBulkApplyRecommendations}
               onClearSelection={() => setSelectedProducts([])}
             />
@@ -217,6 +267,10 @@ export function ProductsLayout({
               products={filteredProducts}
               recommendations={recommendations}
               onPriceUpdate={onPriceUpdate}
+              onCostUpdate={onCostUpdate}
+              onBasePriceUpdate={onBasePriceUpdate}
+              onMaxPriceUpdate={onMaxPriceUpdate}
+              onSmartPricingToggle={onSmartPricingToggle}
               onBulkUpdate={onBulkUpdate}
               viewMode={viewMode}
             />

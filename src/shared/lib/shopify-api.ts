@@ -75,7 +75,7 @@ export class ShopifyApiClient {
 
   async getProducts(params?: {
     limit?: number;
-    page?: number;
+    since_id?: number;
     fields?: string;
     ids?: string;
     title?: string;
@@ -122,7 +122,7 @@ export class ShopifyApiClient {
     published_status?: 'published' | 'unpublished' | 'any';
   }): Promise<ShopifyProductsResponse> {
     const allProducts: ShopifyProduct[] = [];
-    let page = 1;
+    let sinceId: number | undefined = undefined;
     const limit = 250; // Shopify's max limit per request
     let hasNextPage = true;
 
@@ -130,14 +130,18 @@ export class ShopifyApiClient {
       const response = await this.getProducts({
         ...params,
         limit,
-        page,
+        since_id: sinceId,
       });
 
       allProducts.push(...response.products);
 
       // Check if we got less than the limit, which means we're on the last page
       hasNextPage = response.products.length === limit;
-      page++;
+      
+      // Set since_id to the last product's id for next iteration
+      if (hasNextPage && response.products.length > 0) {
+        sinceId = response.products[response.products.length - 1].id;
+      }
     }
 
     return { products: allProducts };

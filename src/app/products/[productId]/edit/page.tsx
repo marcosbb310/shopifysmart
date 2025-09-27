@@ -1,1 +1,1 @@
-export { default } from "@/features/products/edit";
+export { default } from "@/features/products/app/[productId]/edit/page";

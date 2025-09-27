@@ -1,5 +1,22 @@
 // Core pricing types for the pricing optimization feature
 
+export interface ProductVariant {
+  id: string;
+  title: string;
+  price: number;
+  compareAtPrice?: number;
+  inventory: number;
+  sku?: string;
+  barcode?: string;
+  weight?: number;
+  weightUnit?: string;
+  requiresShipping: boolean;
+  taxable: boolean;
+  option1?: string;
+  option2?: string;
+  option3?: string;
+}
+
 export interface Product {
   id: string;
   title: string;
@@ -7,12 +24,25 @@ export interface Product {
   currentPrice: number;
   costPrice?: number;
   compareAtPrice?: number;
+  basePrice: number; // Minimum price the product can go
+  maxPrice: number; // Maximum price the product can go
   inventory: number;
   category: string;
   tags: string[];
   vendor: string;
+  imageUrl?: string; // Product image URL
+  smartPricingEnabled: boolean; // Whether smart pricing is enabled for this product
+  variants?: ProductVariant[]; // Product variants (size, color, etc.)
+  options?: ProductOption[]; // Product options (Size, Color, etc.)
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface ProductOption {
+  id: string;
+  name: string;
+  position: number;
+  values: string[];
 }
 
 export interface PricingRule {

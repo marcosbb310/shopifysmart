@@ -109,7 +109,7 @@ export default function ProductEditPage() {
       if (!result.success) {
         console.error('API Error:', result);
         if (result.details && Array.isArray(result.details)) {
-          const errorMessages = result.details.map((detail: any) => 
+          const errorMessages = result.details.map((detail: { path: string; message: string }) => 
             `${detail.path}: ${detail.message}`
           ).join(', ');
           throw new Error(`Validation errors: ${errorMessages}`);

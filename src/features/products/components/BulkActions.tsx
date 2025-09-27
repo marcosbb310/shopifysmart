@@ -13,13 +13,19 @@ import {
   DollarSign,
   Package,
   CheckCircle,
-  AlertTriangle
+  AlertTriangle,
+  Calculator,
+  Banknote,
+  Coins,
+  CreditCard,
+  Receipt
 } from "lucide-react";
 import { useState } from "react";
 
 interface BulkActionsProps {
   selectedProducts: string[];
   onBulkPriceUpdate: (productIds: string[], priceChange: number, type: 'percentage' | 'fixed') => void;
+  onBulkPricingUpdate: (field: string, type: 'percentage' | 'fixed', value: number) => void;
   onBulkApplyRecommendations: (productIds: string[]) => void;
   onClearSelection: () => void;
 }
@@ -27,19 +33,25 @@ interface BulkActionsProps {
 export function BulkActions({ 
   selectedProducts, 
   onBulkPriceUpdate, 
+  onBulkPricingUpdate,
   onBulkApplyRecommendations,
   onClearSelection 
 }: BulkActionsProps) {
   const [priceChange, setPriceChange] = useState(0);
   const [changeType, setChangeType] = useState<'percentage' | 'fixed'>('percentage');
   const [fixedPrice, setFixedPrice] = useState(0);
+  const [selectedField, setSelectedField] = useState('currentPrice');
+
+  const pricingFields = [
+    { value: 'currentPrice', label: 'Current Price', icon: Banknote },
+    { value: 'basePrice', label: 'Base Price', icon: DollarSign },
+    { value: 'maxPrice', label: 'Max Price', icon: Coins },
+    { value: 'costPrice', label: 'Cost Price', icon: CreditCard },
+  ];
 
   const handleApplyPriceChange = () => {
-    if (changeType === 'percentage') {
-      onBulkPriceUpdate(selectedProducts, priceChange, 'percentage');
-    } else {
-      onBulkPriceUpdate(selectedProducts, fixedPrice, 'fixed');
-    }
+    const value = changeType === 'percentage' ? priceChange : fixedPrice;
+    onBulkPricingUpdate(selectedField, changeType, value);
   };
 
   const formatPrice = (price: number) => {
@@ -54,15 +66,15 @@ export function BulkActions({
   }
 
   return (
-    <Card className="border-0 shadow-sm bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200 dark:border-green-800">
+    <Card className="border-0 shadow-sm bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-lg font-semibold text-green-900 dark:text-green-100 flex items-center">
-              <Settings className="w-5 h-5 mr-2" />
+            <CardTitle className="text-lg font-semibold text-slate-900 dark:text-slate-100 flex items-center">
+              <Settings className="w-5 h-5 mr-2 text-emerald-600 dark:text-emerald-400" />
               Bulk Actions
             </CardTitle>
-            <CardDescription className="text-green-700 dark:text-green-300">
+            <CardDescription className="text-slate-600 dark:text-slate-400">
               {selectedProducts.length} product{selectedProducts.length !== 1 ? 's' : ''} selected
             </CardDescription>
           </div>
@@ -70,7 +82,7 @@ export function BulkActions({
             variant="ghost"
             size="sm"
             onClick={onClearSelection}
-            className="text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300"
+            className="text-slate-600 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
           >
             Clear Selection
           </Button>
@@ -79,44 +91,46 @@ export function BulkActions({
       <CardContent className="space-y-6">
         {/* Quick Actions */}
         <div>
-          <h4 className="font-medium text-green-900 dark:text-green-100 mb-3">
-            Quick Actions
-          </h4>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="font-medium text-slate-900 dark:text-slate-100 text-sm">
+              Quick Actions
+            </h4>
+          </div>
+          <div className="flex gap-1">
             <Button
               size="sm"
               variant="outline"
-              className="border-green-200 text-green-700 hover:bg-green-100 dark:border-green-800 dark:text-green-300 dark:hover:bg-green-900/30"
+              className="border-slate-200 text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-700 text-xs px-2 py-1 h-7"
               onClick={() => onBulkApplyRecommendations(selectedProducts)}
             >
-              <CheckCircle className="w-4 h-4 mr-2" />
-              Apply AI Recommendations
+              <CheckCircle className="w-3 h-3 mr-1 text-emerald-600 dark:text-emerald-400" />
+              AI Apply
             </Button>
             <Button
               size="sm"
               variant="outline"
-              className="border-green-200 text-green-700 hover:bg-green-100 dark:border-green-800 dark:text-green-300 dark:hover:bg-green-900/30"
+              className="border-slate-200 text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-700 text-xs px-2 py-1 h-7"
               onClick={() => {
                 setPriceChange(5);
                 setChangeType('percentage');
                 handleApplyPriceChange();
               }}
             >
-              <TrendingUp className="w-4 h-4 mr-2" />
-              +5% Price Increase
+              <TrendingUp className="w-3 h-3 mr-1 text-emerald-600 dark:text-emerald-400" />
+              +5%
             </Button>
             <Button
               size="sm"
               variant="outline"
-              className="border-green-200 text-green-700 hover:bg-green-100 dark:border-green-800 dark:text-green-300 dark:hover:bg-green-900/30"
+              className="border-slate-200 text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-700 text-xs px-2 py-1 h-7"
               onClick={() => {
                 setPriceChange(-5);
                 setChangeType('percentage');
                 handleApplyPriceChange();
               }}
             >
-              <TrendingDown className="w-4 h-4 mr-2" />
-              -5% Price Decrease
+              <TrendingDown className="w-3 h-3 mr-1 text-emerald-600 dark:text-emerald-400" />
+              -5%
             </Button>
           </div>
         </div>
@@ -124,7 +138,8 @@ export function BulkActions({
         {/* Custom Price Adjustment */}
         <div>
           <div className="flex items-center justify-between mb-3">
-            <h4 className="font-medium text-green-900 dark:text-green-100">
+            <h4 className="font-medium text-slate-900 dark:text-slate-100 flex items-center">
+              <Calculator className="w-4 h-4 mr-2 text-emerald-600 dark:text-emerald-400" />
               Custom Price Adjustment
             </h4>
             <Select value={changeType} onValueChange={(value: 'percentage' | 'fixed') => setChangeType(value)}>
@@ -137,50 +152,85 @@ export function BulkActions({
               </SelectContent>
             </Select>
           </div>
-          <div className="space-y-4">
-            {changeType === 'percentage' ? (
-              <div className="space-y-2">
-                <Slider
-                  value={[priceChange]}
-                  onValueChange={(value) => setPriceChange(value[0])}
-                  min={-50}
-                  max={50}
-                  step={1}
-                  className="w-full"
-                />
-                  <div className="flex justify-between text-sm text-green-600 dark:text-green-400">
-                  <span>-50%</span>
-                  <span className="font-medium">{priceChange}%</span>
-                  <span>+50%</span>
-                </div>
-              </div>
-            ) : (
-              <Input
-                type="number"
-                placeholder="0.00"
-                value={fixedPrice}
-                onChange={(e) => setFixedPrice(Number(e.target.value))}
-                className="w-full"
-              />
-            )}
+          
+          {/* Compact Layout */}
+          <div className="flex items-end space-x-3">
+            {/* Field Selection */}
+            <div className="flex-1">
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 block">
+                Field
+              </label>
+              <Select value={selectedField} onValueChange={setSelectedField}>
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {pricingFields.map((field) => {
+                    const Icon = field.icon;
+                    return (
+                      <SelectItem key={field.value} value={field.value}>
+                        <div className="flex items-center space-x-2">
+                          <Icon className="w-4 h-4" />
+                          <span>{field.label}</span>
+                        </div>
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+            </div>
 
-            <Button
-              onClick={handleApplyPriceChange}
-              className="w-full bg-green-600 hover:bg-green-700 text-white"
-            >
-              <DollarSign className="w-4 h-4 mr-2" />
-              Apply {changeType === 'percentage' ? `${priceChange}%` : formatPrice(fixedPrice)} Change
-            </Button>
+            {/* Value Input */}
+            <div className="flex-1">
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 block">
+                {changeType === 'percentage' ? 'Percentage' : 'Amount'}
+              </label>
+              {changeType === 'percentage' ? (
+                <Input
+                  type="number"
+                  placeholder="0"
+                  value={priceChange}
+                  onChange={(e) => setPriceChange(Number(e.target.value))}
+                  className="w-full"
+                  min={-100}
+                  max={100}
+                  step={0.1}
+                />
+              ) : (
+                <Input
+                  type="number"
+                  placeholder="0.00"
+                  value={fixedPrice}
+                  onChange={(e) => setFixedPrice(Number(e.target.value))}
+                  className="w-full"
+                  step={0.01}
+                />
+              )}
+            </div>
+
+            {/* Apply Button */}
+            <div className="flex-1">
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 block">
+                Action
+              </label>
+              <Button
+                onClick={handleApplyPriceChange}
+                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
+              >
+                <Receipt className="w-4 h-4 mr-2" />
+                Apply
+              </Button>
+            </div>
           </div>
         </div>
 
         {/* Impact Preview */}
-        <div className="bg-white/50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
-          <h4 className="font-medium text-green-900 dark:text-green-100 mb-2 flex items-center">
-            <AlertTriangle className="w-4 h-4 mr-2" />
+        <div className="bg-slate-50 dark:bg-slate-700 p-4 rounded-lg border border-slate-200 dark:border-slate-600">
+          <h4 className="font-medium text-slate-900 dark:text-slate-100 mb-2 flex items-center">
+            <AlertTriangle className="w-4 h-4 mr-2 text-emerald-600 dark:text-emerald-400" />
             Impact Preview
           </h4>
-          <div className="text-sm text-green-700 dark:text-green-300 space-y-1">
+          <div className="text-sm text-slate-600 dark:text-slate-400 space-y-1">
             <p>• {selectedProducts.length} products will be updated</p>
             <p>• Changes will be applied immediately</p>
             <p>• You can undo changes within 24 hours</p>
