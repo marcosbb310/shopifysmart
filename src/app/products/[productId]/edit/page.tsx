@@ -1,3 +1,1 @@
-import { ProductEditPage } from "@/features/products";
-
-export default ProductEditPage;
+export { default } from "@/features/products/edit";

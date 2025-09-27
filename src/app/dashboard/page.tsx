@@ -1,3 +1,1 @@
-import { DashboardPage } from "@/features/dashboard";
-
-export default DashboardPage;
+export { default } from "@/features/dashboard/page";
