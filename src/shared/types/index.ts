@@ -1,6 +1,9 @@
 // Shared TypeScript types and interfaces
 // Common types that can be used across features
 
+// Shopify types
+export * from './shopify';
+
 // Example: export interface User { id: string; email: string }
 // Example: export type PricingStrategy = 'dynamic' | 'static'
 

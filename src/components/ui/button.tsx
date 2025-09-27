@@ -39,6 +39,7 @@ function Button({
   variant,
   size,
   asChild = false,
+  ref,
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
@@ -48,11 +49,15 @@ function Button({
 
   return (
     <Comp
-      data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
+      ref={ref}
       {...props}
-    />
-  )
+    >
+      <span className="inline-flex items-center gap-2 transition-transform duration-10 active:translate-y-[2px]">
+        {props.children}
+      </span>
+    </Comp>
+  );
 }
 
 export { Button, buttonVariants }
