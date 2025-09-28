@@ -51,7 +51,14 @@ export default function PerformancePage() {
 
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {[].map((metric) => (
+        {[].map((metric: { 
+          title: string; 
+          trend: "up" | "down"; 
+          change: string; 
+          value: string; 
+          description: string;
+          icon: React.ComponentType<{ className?: string }>; 
+        }) => (
           <Card key={metric.title}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -117,7 +124,15 @@ export default function PerformancePage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {[].map((product, index) => (
+            {[].map((product: { 
+              name: string; 
+              revenue: string; 
+              change: string; 
+              trend: "up" | "down"; 
+              unitsSold: number;
+              priceChange: string;
+              impact: string;
+            }, index: number) => (
               <div key={product.name} className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="flex items-center space-x-4">
                   <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">

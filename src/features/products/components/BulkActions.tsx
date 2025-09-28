@@ -12,19 +12,41 @@ import {
   Banknote,
   Coins,
   CreditCard,
-  Receipt
+  Receipt,
+  Loader2
 } from "lucide-react";
 import { useState } from "react";
-import { mockPricingFields } from "@/shared/lib";
+import { mockPricingFields, withErrorHandling } from "@/shared/lib";
 
+/**
+ * Props for the BulkActions component
+ */
 interface BulkActionsProps {
+  /** Array of selected product IDs */
   selectedProducts: string[];
-  onBulkPriceUpdate: (productIds: string[], priceChange: number, type: 'percentage' | 'fixed') => void;
-  onBulkPricingUpdate: (field: string, type: 'percentage' | 'fixed', value: number) => void;
-  onBulkApplyRecommendations: (productIds: string[]) => void;
+  /** Callback for bulk price updates */
+  onBulkPriceUpdate: (productIds: string[], priceChange: number, type: 'percentage' | 'fixed') => Promise<void> | void;
+  /** Callback for bulk pricing field updates */
+  onBulkPricingUpdate: (field: string, type: 'percentage' | 'fixed', value: number) => Promise<void> | void;
+  /** Callback for applying bulk recommendations */
+  onBulkApplyRecommendations: (productIds: string[]) => Promise<void> | void;
+  /** Callback to clear product selection */
   onClearSelection: () => void;
 }
 
+/**
+ * BulkActions component for performing bulk operations on selected products
+ * 
+ * Features:
+ * - Bulk price updates (percentage or fixed amount)
+ * - Bulk pricing field updates (cost, base price, max price)
+ * - Bulk application of pricing recommendations
+ * - Real-time calculation previews
+ * - Error handling with user feedback
+ * 
+ * @param props - Component props
+ * @returns JSX element representing the bulk actions interface
+ */
 export function BulkActions({ 
   selectedProducts, 
   onBulkPriceUpdate: _onBulkPriceUpdate, 
@@ -36,6 +58,8 @@ export function BulkActions({
   const [changeType, setChangeType] = useState<'percentage' | 'fixed'>('percentage');
   const [fixedPrice, setFixedPrice] = useState(0);
   const [selectedField, setSelectedField] = useState('currentPrice');
+  const [isApplying, setIsApplying] = useState(false);
+  const [isApplyingRecommendations, setIsApplyingRecommendations] = useState(false);
 
   // Map centralized mock data to component format with icons
   const iconMap: { [key: string]: React.ComponentType } = {
@@ -47,12 +71,34 @@ export function BulkActions({
 
   const pricingFields = mockPricingFields.map(field => ({
     ...field,
-    icon: iconMap[field.icon] || Banknote
+    icon: iconMap[field.icon as keyof typeof iconMap] || Banknote
   }));
 
-  const handleApplyPriceChange = () => {
-    const value = changeType === 'percentage' ? priceChange : fixedPrice;
-    onBulkPricingUpdate(selectedField, changeType, value);
+  const handleApplyPriceChange = async () => {
+    await withErrorHandling(async () => {
+      setIsApplying(true);
+      const value = changeType === 'percentage' ? priceChange : fixedPrice;
+      await onBulkPricingUpdate(selectedField, changeType, value);
+    }, {
+      operation: 'bulk_price_update',
+      selectedField,
+      changeType,
+      value: changeType === 'percentage' ? priceChange : fixedPrice,
+    }).finally(() => {
+      setIsApplying(false);
+    });
+  };
+
+  const handleApplyRecommendations = async () => {
+    await withErrorHandling(async () => {
+      setIsApplyingRecommendations(true);
+      await onBulkApplyRecommendations(selectedProducts);
+    }, {
+      operation: 'bulk_apply_recommendations',
+      selectedProductsCount: selectedProducts.length,
+    }).finally(() => {
+      setIsApplyingRecommendations(false);
+    });
   };
 
   // TODO: Use formatPrice when implementing price display
@@ -103,35 +149,50 @@ export function BulkActions({
               size="sm"
               variant="outline"
               className="border-slate-200 text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-700 text-xs px-2 py-1 h-7"
-              onClick={() => onBulkApplyRecommendations(selectedProducts)}
+              onClick={handleApplyRecommendations}
+              disabled={isApplyingRecommendations}
             >
-              <CheckCircle className="w-3 h-3 mr-1 text-emerald-600 dark:text-emerald-400" />
+              {isApplyingRecommendations ? (
+                <Loader2 className="w-3 h-3 mr-1 animate-spin text-emerald-600 dark:text-emerald-400" />
+              ) : (
+                <CheckCircle className="w-3 h-3 mr-1 text-emerald-600 dark:text-emerald-400" />
+              )}
               AI Apply
             </Button>
             <Button
               size="sm"
               variant="outline"
               className="border-slate-200 text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-700 text-xs px-2 py-1 h-7"
-              onClick={() => {
+              onClick={async () => {
                 setPriceChange(5);
                 setChangeType('percentage');
-                handleApplyPriceChange();
+                await handleApplyPriceChange();
               }}
+              disabled={isApplying}
             >
-              <TrendingUp className="w-3 h-3 mr-1 text-emerald-600 dark:text-emerald-400" />
+              {isApplying ? (
+                <Loader2 className="w-3 h-3 mr-1 animate-spin text-emerald-600 dark:text-emerald-400" />
+              ) : (
+                <TrendingUp className="w-3 h-3 mr-1 text-emerald-600 dark:text-emerald-400" />
+              )}
               +5%
             </Button>
             <Button
               size="sm"
               variant="outline"
               className="border-slate-200 text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-700 text-xs px-2 py-1 h-7"
-              onClick={() => {
+              onClick={async () => {
                 setPriceChange(-5);
                 setChangeType('percentage');
-                handleApplyPriceChange();
+                await handleApplyPriceChange();
               }}
+              disabled={isApplying}
             >
-              <TrendingDown className="w-3 h-3 mr-1 text-emerald-600 dark:text-emerald-400" />
+              {isApplying ? (
+                <Loader2 className="w-3 h-3 mr-1 animate-spin text-emerald-600 dark:text-emerald-400" />
+              ) : (
+                <TrendingDown className="w-3 h-3 mr-1 text-emerald-600 dark:text-emerald-400" />
+              )}
               -5%
             </Button>
           </div>
@@ -168,7 +229,7 @@ export function BulkActions({
                 </SelectTrigger>
                 <SelectContent>
                   {pricingFields.map((field) => {
-                    const Icon = field.icon;
+                    const Icon = field.icon as React.ComponentType<{ className?: string }>;
                     return (
                       <SelectItem key={field.value} value={field.value}>
                         <div className="flex items-center space-x-2">
@@ -192,7 +253,7 @@ export function BulkActions({
                   type="number"
                   placeholder="0"
                   value={priceChange === 0 ? '' : priceChange}
-                  onChange={(e) => setPriceChange(e.target.value === '' ? 0 : Number(e.target.value))}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPriceChange(e.target.value === '' ? 0 : Number(e.target.value))}
                   className="w-full"
                   min={-100}
                   max={100}
@@ -203,7 +264,7 @@ export function BulkActions({
                   type="number"
                   placeholder="0.00"
                   value={fixedPrice === 0 ? '' : fixedPrice}
-                  onChange={(e) => setFixedPrice(e.target.value === '' ? 0 : Number(e.target.value))}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFixedPrice(e.target.value === '' ? 0 : Number(e.target.value))}
                   className="w-full"
                   step={0.01}
                 />
@@ -217,9 +278,14 @@ export function BulkActions({
               </label>
               <Button
                 onClick={handleApplyPriceChange}
+                disabled={isApplying}
                 className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
               >
-                <Receipt className="w-4 h-4 mr-2" />
+                {isApplying ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Receipt className="w-4 h-4 mr-2" />
+                )}
                 Apply
               </Button>
             </div>

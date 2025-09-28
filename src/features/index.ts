@@ -5,6 +5,5 @@ export * from './pricing';
 export * from './dashboard';
 export * from './products';
 export * from './navigation';
-
-// Note: performance and history pages are now located in /app/ directory
-// These feature modules are kept for future components and utilities
+export * from './history';
+export * from './performance';

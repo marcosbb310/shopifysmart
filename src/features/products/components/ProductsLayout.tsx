@@ -5,6 +5,7 @@ import { ProductList } from "./ProductList";
 import { ProductFilters } from "./ProductFilters";
 import { BulkActions } from "./BulkActions";
 import { Button, Badge, Switch, Popover, PopoverContent, PopoverTrigger } from "@/components/ui";
+import { ProductListSkeleton } from "@/shared/components";
 import { 
   Filter, 
   Grid, 
@@ -20,16 +21,17 @@ interface ProductsLayoutProps {
   products: Product[];
   recommendations?: PricingRecommendation[];
   globalSmartPricing: boolean;
-  onPriceUpdate: (productId: string, newPrice: number) => void;
-  onCostUpdate: (productId: string, newCost: number) => void;
-  onBasePriceUpdate: (productId: string, newBasePrice: number) => void;
-  onMaxPriceUpdate: (productId: string, newMaxPrice: number) => void;
+  onPriceUpdate: (productId: string, newPrice: number) => Promise<void> | void;
+  onCostUpdate: (productId: string, newCost: number) => Promise<void> | void;
+  onBasePriceUpdate: (productId: string, newBasePrice: number) => Promise<void> | void;
+  onMaxPriceUpdate: (productId: string, newMaxPrice: number) => Promise<void> | void;
   onSmartPricingToggle: (productId: string, enabled: boolean) => void;
   onGlobalSmartPricingToggle: (enabled: boolean) => void;
-  onBulkUpdate: (productIds: string[], priceChange: number, type: 'percentage' | 'fixed') => void;
-  onBulkPricingUpdate: (field: string, type: 'percentage' | 'fixed', value: number) => void;
-  onBulkApplyRecommendations: (productIds: string[]) => void;
+  onBulkUpdate: (productIds: string[], priceChange: number, type: 'percentage' | 'fixed') => Promise<void> | void;
+  onBulkPricingUpdate: (field: string, type: 'percentage' | 'fixed', value: number) => Promise<void> | void;
+  onBulkApplyRecommendations: (productIds: string[]) => Promise<void> | void;
   isUpdating?: boolean;
+  isLoading?: boolean;
 }
 
 export function ProductsLayout({ 
@@ -45,7 +47,8 @@ export function ProductsLayout({
   onBulkUpdate,
   onBulkPricingUpdate,
   onBulkApplyRecommendations,
-  isUpdating = false
+  isUpdating = false,
+  isLoading = false
 }: ProductsLayoutProps) {
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
@@ -265,17 +268,21 @@ export function ProductsLayout({
         <div className="flex flex-col gap-6">
           {/* Products List */}
           <div className="flex-1">
-            <ProductList
-              products={filteredProducts}
-              recommendations={recommendations}
-              onPriceUpdate={onPriceUpdate}
-              onCostUpdate={onCostUpdate}
-              onBasePriceUpdate={onBasePriceUpdate}
-              onMaxPriceUpdate={onMaxPriceUpdate}
-              onSmartPricingToggle={onSmartPricingToggle}
-              onBulkUpdate={onBulkUpdate}
-              viewMode={viewMode}
-            />
+            {isLoading ? (
+              <ProductListSkeleton />
+            ) : (
+              <ProductList
+                products={filteredProducts}
+                recommendations={recommendations}
+                onPriceUpdate={onPriceUpdate}
+                onCostUpdate={onCostUpdate}
+                onBasePriceUpdate={onBasePriceUpdate}
+                onMaxPriceUpdate={onMaxPriceUpdate}
+                onSmartPricingToggle={onSmartPricingToggle}
+                onBulkUpdate={onBulkUpdate}
+                viewMode={viewMode}
+              />
+            )}
           </div>
         </div>
       </div>

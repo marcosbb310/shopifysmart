@@ -1,21 +1,45 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { Input, Button } from "@/components/ui";
-import { Check, X, Edit3 } from "lucide-react";
+import { Check, X, Edit3, Loader2 } from "lucide-react";
 
+/**
+ * Props for the PriceInput component
+ */
 interface PriceInputProps {
+  /** Current price value */
   value: number;
+  /** Label for the input field */
   label: string;
-  onSave: (newValue: number) => void;
+  /** Callback when price is saved */
+  onSave: (newValue: number) => Promise<void> | void;
+  /** Whether the input is disabled */
   disabled?: boolean;
+  /** Additional CSS classes */
   className?: string;
+  /** Minimum allowed value */
   min?: number;
+  /** Maximum allowed value */
   max?: number;
+  /** Step increment for the input */
   step?: number;
 }
 
-export function PriceInput({ 
+/**
+ * PriceInput component for editing product prices with inline editing
+ * 
+ * Features:
+ * - Inline editing with save/cancel functionality
+ * - Input validation with min/max constraints
+ * - Loading states during save operations
+ * - Error handling and display
+ * - Keyboard shortcuts (Enter to save, Escape to cancel)
+ * 
+ * @param props - Component props
+ * @returns JSX element representing the price input
+ */
+function PriceInputComponent({ 
   value, 
   label, 
   onSave, 
@@ -28,19 +52,20 @@ export function PriceInput({
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(value.toString());
   const [error, setError] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     setEditValue(value.toString());
   }, [value]);
 
-  const handleEdit = () => {
+  const handleEdit = useCallback(() => {
     if (disabled) return;
     setIsEditing(true);
     setEditValue(value.toString());
     setError("");
-  };
+  }, [disabled, value]);
 
-  const handleSave = () => {
+  const handleSave = useCallback(async () => {
     const numValue = parseFloat(editValue);
     
     if (isNaN(numValue)) {
@@ -58,24 +83,32 @@ export function PriceInput({
       return;
     }
 
-    onSave(numValue);
-    setIsEditing(false);
-    setError("");
-  };
+    try {
+      setIsSaving(true);
+      await onSave(numValue);
+      setIsEditing(false);
+      setError("");
+    } catch (error) {
+      setError("Failed to save. Please try again.");
+      console.error("Price save error:", error);
+    } finally {
+      setIsSaving(false);
+    }
+  }, [editValue, min, max, onSave]);
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     setEditValue(value.toString());
     setIsEditing(false);
     setError("");
-  };
+  }, [value]);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       handleSave();
     } else if (e.key === "Escape") {
       handleCancel();
     }
-  };
+  }, [handleSave, handleCancel]);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -92,33 +125,46 @@ export function PriceInput({
           <Input
             type="number"
             value={editValue}
-            onChange={(e) => setEditValue(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEditValue(e.target.value)}
             onKeyDown={handleKeyDown}
             min={min}
             max={max}
             step={step}
             className="text-lg font-semibold"
             autoFocus
+            aria-label={`Edit ${label.toLowerCase()}`}
+            aria-describedby={error ? `${label.toLowerCase()}-error` : undefined}
+            aria-invalid={!!error}
           />
           {error && (
-            <p className="text-xs text-red-600 dark:text-red-400">{error}</p>
+            <p id={`${label.toLowerCase()}-error`} className="text-xs text-red-600 dark:text-red-400" role="alert">
+              {error}
+            </p>
           )}
           <div className="flex space-x-1">
             <Button
               size="sm"
               variant="outline"
               onClick={handleSave}
+              disabled={isSaving}
               className="h-6 px-2"
+              aria-label={`Save ${label.toLowerCase()}`}
             >
-              <Check className="w-3 h-3" />
+              {isSaving ? (
+                <Loader2 className="w-3 h-3 animate-spin" aria-hidden="true" />
+              ) : (
+                <Check className="w-3 h-3" aria-hidden="true" />
+              )}
             </Button>
             <Button
               size="sm"
               variant="outline"
               onClick={handleCancel}
+              disabled={isSaving}
               className="h-6 px-2"
+              aria-label={`Cancel editing ${label.toLowerCase()}`}
             >
-              <X className="w-3 h-3" />
+              <X className="w-3 h-3" aria-hidden="true" />
             </Button>
           </div>
         </div>
@@ -130,6 +176,15 @@ export function PriceInput({
     <div 
       className={`group cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors rounded-lg p-3 ${className}`}
       onClick={handleEdit}
+      role="button"
+      tabIndex={disabled ? -1 : 0}
+      aria-label={`Edit ${label.toLowerCase()}, current value: ${formatPrice(value)}`}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleEdit();
+        }
+      }}
     >
       <div className="flex items-center justify-between">
         <div>
@@ -139,9 +194,12 @@ export function PriceInput({
           </div>
         </div>
         {!disabled && (
-          <Edit3 className="w-4 h-4 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+          <Edit3 className="w-4 h-4 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
         )}
       </div>
     </div>
   );
 }
+
+// Export memoized component for performance optimization
+export const PriceInput = memo(PriceInputComponent);

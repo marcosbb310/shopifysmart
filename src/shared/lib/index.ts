@@ -13,6 +13,9 @@ export * from './app-init';
 // Mock data utilities
 export * from './mock-data';
 
+// Error handling utilities
+export * from './error-handling';
+
 // Example: export { formatCurrency } from './formatting'
 
 // Utilities will be exported here as they are created

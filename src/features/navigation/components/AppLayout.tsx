@@ -1,9 +1,11 @@
 "use client";
 
+import { memo } from "react";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui";
 import { ErrorBoundary } from "@/shared/components";
 import { AppNavigation } from "./AppNavigation";
 import { Button } from "@/components/ui";
+import { useNavigationPreloader } from "@/shared/hooks";
 import { 
   Settings, 
   Bell,
@@ -14,7 +16,10 @@ interface AppLayoutProps {
   children: React.ReactNode;
 }
 
-export function AppLayout({ children }: AppLayoutProps) {
+function AppLayoutComponent({ children }: AppLayoutProps) {
+  // Initialize navigation preloader for better performance
+  useNavigationPreloader();
+
   return (
     <SidebarProvider>
       <ErrorBoundary level="component">
@@ -53,3 +58,6 @@ export function AppLayout({ children }: AppLayoutProps) {
     </SidebarProvider>
   );
 }
+
+// Memoize the layout component to prevent unnecessary re-renders
+export const AppLayout = memo(AppLayoutComponent);

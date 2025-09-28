@@ -144,7 +144,7 @@ export default function ProductEditPage() {
     if (productId) {
       fetchProduct();
     }
-  }, [productId]);
+  }, [productId]); // fetchProduct is stable as it doesn't depend on any changing values
 
   if (loading) {
     return (

@@ -6,10 +6,27 @@ import {
   Zap
 } from "lucide-react";
 
+/**
+ * Props for the DashboardLayout component
+ */
 interface DashboardLayoutProps {
+  /** Child components to render within the dashboard layout */
   children?: React.ReactNode;
 }
 
+/**
+ * DashboardLayout component that provides the main layout structure for the dashboard
+ * 
+ * Features:
+ * - Responsive header with branding and navigation
+ * - Quick action buttons for common tasks
+ * - Error boundary protection
+ * - Dark mode support
+ * - Consistent spacing and styling
+ * 
+ * @param props - Component props
+ * @returns JSX element representing the dashboard layout
+ */
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">

@@ -12,21 +12,47 @@ import {
 } from "lucide-react";
 import { Product, PricingRecommendation, ProductVariant } from "@/features/pricing/types";
 import { PriceInput } from "./PriceInput";
-import { useState } from "react";
+import { useState, useMemo, useCallback, memo } from "react";
 
+/**
+ * Props for the ProductList component
+ */
 interface ProductListProps {
+  /** Array of products to display */
   products: Product[];
+  /** Optional pricing recommendations for products */
   recommendations?: PricingRecommendation[];
+  /** Callback when product price is updated */
   onPriceUpdate: (productId: string, newPrice: number) => void;
+  /** Callback when product cost is updated */
   onCostUpdate: (productId: string, newCost: number) => void;
+  /** Callback when product base price is updated */
   onBasePriceUpdate: (productId: string, newBasePrice: number) => void;
+  /** Callback when product max price is updated */
   onMaxPriceUpdate: (productId: string, newMaxPrice: number) => void;
+  /** Callback when smart pricing is toggled */
   onSmartPricingToggle: (productId: string, enabled: boolean) => void;
+  /** Callback for bulk price updates */
   onBulkUpdate: (productIds: string[], priceChange: number, type: 'percentage' | 'fixed') => void;
+  /** Display mode for the product list */
   viewMode?: 'list' | 'grid';
 }
 
-export function ProductList({ 
+/**
+ * ProductList component for displaying and managing products with pricing optimization
+ * 
+ * Features:
+ * - Search and filter products by name, category, and tags
+ * - Sort products by various criteria
+ * - Display pricing recommendations
+ * - Edit product prices, costs, and smart pricing settings
+ * - Expandable product variants
+ * - Bulk actions support
+ * 
+ * @param props - Component props
+ * @returns JSX element representing the product list
+ */
+function ProductListComponent({ 
   products, 
   recommendations = [], 
   onPriceUpdate, 
@@ -45,62 +71,70 @@ export function ProductList({
   const [tagSortPriority, setTagSortPriority] = useState<string | null>(null);
   const [expandedVariants, setExpandedVariants] = useState<Set<string>>(new Set());
 
-  // Get unique categories
-  const categories = Array.from(new Set(products.map(p => p.category)));
+  // Get unique categories - memoized to prevent recalculation
+  const categories = useMemo(() => 
+    Array.from(new Set(products.map(p => p.category))), 
+    [products]
+  );
 
-  // Filter and sort products
-  const filteredProducts = products
-    .filter(product => {
-      const matchesSearch = searchTerm === "" || 
-                           product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           product.vendor.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           (product.tags && product.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())));
-      const matchesCategory = selectedCategory === "all" || product.category === selectedCategory;
-      const matchesTag = selectedTag === "all" || (product.tags && product.tags.includes(selectedTag));
-      return matchesSearch && matchesCategory && matchesTag;
-    })
-    .sort((a, b) => {
-      // If tag sort priority is set, sort by tag priority first
-      if (tagSortPriority) {
-        const aTagIndex = a.tags.indexOf(tagSortPriority);
-        const bTagIndex = b.tags.indexOf(tagSortPriority);
-        
-        // Products with the tag come first
-        if (aTagIndex !== -1 && bTagIndex === -1) return -1;
-        if (aTagIndex === -1 && bTagIndex !== -1) return 1;
-        
-        // If both have the tag, sort by tag position (first tag = higher priority)
-        if (aTagIndex !== -1 && bTagIndex !== -1) {
-          if (aTagIndex !== bTagIndex) {
-            return aTagIndex - bTagIndex;
+  // Filter and sort products - memoized for performance
+  const filteredProducts = useMemo(() => 
+    products
+      .filter(product => {
+        const matchesSearch = searchTerm === "" || 
+                             product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                             product.vendor.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                             (product.tags && product.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())));
+        const matchesCategory = selectedCategory === "all" || product.category === selectedCategory;
+        const matchesTag = selectedTag === "all" || (product.tags && product.tags.includes(selectedTag));
+        return matchesSearch && matchesCategory && matchesTag;
+      })
+      .sort((a, b) => {
+        // If tag sort priority is set, sort by tag priority first
+        if (tagSortPriority) {
+          const aTagIndex = a.tags.indexOf(tagSortPriority);
+          const bTagIndex = b.tags.indexOf(tagSortPriority);
+          
+          // Products with the tag come first
+          if (aTagIndex !== -1 && bTagIndex === -1) return -1;
+          if (aTagIndex === -1 && bTagIndex !== -1) return 1;
+          
+          // If both have the tag, sort by tag position (first tag = higher priority)
+          if (aTagIndex !== -1 && bTagIndex !== -1) {
+            if (aTagIndex !== bTagIndex) {
+              return aTagIndex - bTagIndex;
+            }
           }
+          
+          // If both don't have the tag, or same tag position, sort alphabetically
+          return a.title.localeCompare(b.title);
         }
         
-        // If both don't have the tag, or same tag position, sort alphabetically
-        return a.title.localeCompare(b.title);
-      }
-      
-      // Default sorting
-      switch (sortBy) {
-        case "name":
-          return a.title.localeCompare(b.title);
-        case "price":
-          return a.currentPrice - b.currentPrice;
-        case "inventory":
-          return b.inventory - a.inventory;
-        case "revenue":
-          // This would need actual revenue data
-          return 0;
-        default:
-          return 0;
-      }
-    });
+        // Default sorting
+        switch (sortBy) {
+          case "name":
+            return a.title.localeCompare(b.title);
+          case "price":
+            return a.currentPrice - b.currentPrice;
+          case "inventory":
+            return b.inventory - a.inventory;
+          case "revenue":
+            // This would need actual revenue data
+            return 0;
+          default:
+            return 0;
+        }
+      }),
+    [products, searchTerm, selectedCategory, selectedTag, sortBy, tagSortPriority]
+  );
 
-  const getRecommendation = (productId: string) => {
+  // Memoized recommendation lookup
+  const getRecommendation = useCallback((productId: string) => {
     return recommendations.find(r => r.productId === productId);
-  };
+  }, [recommendations]);
 
-  const toggleVariantsExpansion = (productId: string) => {
+  // Memoized variant expansion toggle
+  const toggleVariantsExpansion = useCallback((productId: string) => {
     setExpandedVariants(prev => {
       const newSet = new Set(prev);
       if (newSet.has(productId)) {
@@ -110,7 +144,7 @@ export function ProductList({
       }
       return newSet;
     });
-  };
+  }, []);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -193,16 +227,18 @@ export function ProductList({
         <CardContent className="p-6">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" aria-hidden="true" />
               <Input
                 placeholder="Search products..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
+                aria-label="Search products by name, vendor, or tags"
+                role="searchbox"
               />
             </div>
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="w-full sm:w-48">
+              <SelectTrigger className="w-full sm:w-48" aria-label="Filter by category">
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
               <SelectContent>
@@ -221,7 +257,7 @@ export function ProductList({
                 setTagSortPriority(null);
               }
             }}>
-              <SelectTrigger className="w-full sm:w-48">
+              <SelectTrigger className="w-full sm:w-48" aria-label="Filter by tag">
                 <SelectValue placeholder="Filter by tag" />
               </SelectTrigger>
               <SelectContent>
@@ -234,7 +270,7 @@ export function ProductList({
               </SelectContent>
             </Select>
             <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-full sm:w-48">
+              <SelectTrigger className="w-full sm:w-48" aria-label="Sort products by">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent>
@@ -677,3 +713,6 @@ export function ProductList({
     </ErrorBoundary>
   );
 }
+
+// Export memoized component for performance optimization
+export const ProductList = memo(ProductListComponent);

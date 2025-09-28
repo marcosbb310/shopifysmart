@@ -19,9 +19,12 @@ export const metadata: Metadata = {
 };
 
 // Initialize the application and validate environment variables
-const isInitialized = initializeAppSync();
-if (!isInitialized) {
-  console.error('❌ Application failed to initialize - check environment variables');
+// Only run initialization once to avoid repeated validation
+if (typeof window === 'undefined') {
+  const isInitialized = initializeAppSync();
+  if (!isInitialized) {
+    console.error('❌ Application failed to initialize - check environment variables');
+  }
 }
 
 export default function RootLayout({

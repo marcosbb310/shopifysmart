@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { memo, useCallback } from "react";
+import { useRoutePreloader } from "@/shared/hooks";
 import {
   Sidebar,
   SidebarContent,
@@ -14,8 +16,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuBadge,
+  Button
 } from "@/components/ui";
-import { Button } from "@/components/ui";
 import {
   LayoutDashboard,
   Package,
@@ -88,8 +90,28 @@ const navigationItems = [
   },
 ];
 
-export function AppNavigation() {
+/**
+ * AppNavigation component that provides the main navigation sidebar for the application
+ * 
+ * Features:
+ * - Responsive sidebar navigation with collapsible groups
+ * - Active route highlighting
+ * - Icon-based navigation items
+ * - Quick actions and settings access
+ * - Branding and user information display
+ * - Mobile-friendly design
+ * - Route preloading for faster navigation
+ * 
+ * @returns JSX element representing the application navigation
+ */
+function AppNavigationComponent() {
   const pathname = usePathname();
+  const { preloadOnHover } = useRoutePreloader();
+
+  // Preload routes on hover for faster navigation
+  const handleMouseEnter = useCallback((href: string) => {
+    preloadOnHover(href);
+  }, [preloadOnHover]);
 
   return (
     <Sidebar>
@@ -126,7 +148,11 @@ export function AppNavigation() {
                         isActive={isActive}
                         className="w-full justify-start"
                       >
-                        <Link href={item.href}>
+                        <Link 
+                          href={item.href}
+                          onMouseEnter={() => handleMouseEnter(item.href)}
+                          prefetch={true}
+                        >
                           <Icon className="w-4 h-4" />
                           <span>{item.title}</span>
                           {'badge' in item && item.badge && (
@@ -168,3 +194,6 @@ export function AppNavigation() {
     </Sidebar>
   );
 }
+
+// Memoize the navigation component to prevent unnecessary re-renders
+export const AppNavigation = memo(AppNavigationComponent);

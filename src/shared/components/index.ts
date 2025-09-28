@@ -9,3 +9,7 @@ export { ErrorTestComponent } from './ErrorTestComponent';
 
 // Application initialization
 export { AppInitializer, initializeAppSync } from './AppInitializer';
+
+// Loading skeletons
+export { DashboardSkeleton, ProductListSkeleton, ProductEditSkeleton } from './LoadingSkeletons';
+

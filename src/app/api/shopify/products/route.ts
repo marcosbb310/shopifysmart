@@ -8,9 +8,11 @@ export async function GET(_request: NextRequest) {
     
     // Validate environment variables
     try {
+      console.log('Validating environment variables...');
       validateEnv();
+      console.log('✅ Environment validation passed');
     } catch (error) {
-      console.error('Environment validation failed:', error);
+      console.error('❌ Environment validation failed:', error);
       return NextResponse.json(
         { 
           success: false, 
@@ -22,27 +24,33 @@ export async function GET(_request: NextRequest) {
 
     const { searchParams } = new URL(_request.url);
     
-    // Parse query parameters
-    const params: Record<string, string | number> = {};
-    if (searchParams.get('limit')) {
-      params.limit = parseInt(searchParams.get('limit')!, 10);
-    }
+    // Parse query parameters with optimized defaults
+    const params: Record<string, string | number> = {
+      limit: parseInt(searchParams.get('limit') || '50', 10), // Default to 50 for faster loading
+      fields: searchParams.get('fields') || 'id,title,handle,variants,options,product_type,vendor,tags,image,created_at,updated_at', // Only fetch essential fields
+    };
+    
     if (searchParams.get('since_id')) {
       params.since_id = parseInt(searchParams.get('since_id')!, 10);
     }
-    if (searchParams.get('fields')) {
-      params.fields = searchParams.get('fields')!;
+    if (searchParams.get('vendor')) {
+      params.vendor = searchParams.get('vendor')!;
+    }
+    if (searchParams.get('product_type')) {
+      params.product_type = searchParams.get('product_type')!;
     }
 
-    console.log('Fetching products with params:', params);
+    console.log('Fetching products with optimized params:', params);
     
     // Initialize Shopify API
+    console.log('Creating Shopify client...');
     const shopify = createShopifyClient();
+    console.log('✅ Shopify client created');
     
-    // Fetch all products
-    const response = await shopify.getAllProducts(params);
-    
-    console.log(`Successfully fetched ${response.products.length} products`);
+    // Use fast single-page fetch instead of getAllProducts for better performance
+    console.log('Making API call to Shopify...');
+    const response = await shopify.getProducts(params);
+    console.log(`✅ Successfully fetched ${response.products.length} products`);
     
     return NextResponse.json({
       success: true,
