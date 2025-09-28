@@ -1,27 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ShopifyAPI } from '@/shared/lib/shopify-api';
+import { createShopifyClient, ShopifyApiError, validateEnv } from '@/shared/lib';
 
 // GET - Fetch products
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     console.log('GET /api/shopify/products - Starting request');
     
-    // Check for required environment variables
-    if (!process.env.SHOPIFY_STORE_URL || !process.env.SHOPIFY_ACCESS_TOKEN) {
-      console.error('Missing required environment variables');
+    // Validate environment variables
+    try {
+      validateEnv();
+    } catch (error) {
+      console.error('Environment validation failed:', error);
       return NextResponse.json(
         { 
           success: false, 
-          message: 'Missing required environment variables' 
+          message: 'Environment configuration error. Please check your environment variables.' 
         },
         { status: 500 }
       );
     }
 
-    const { searchParams } = new URL(request.url);
+    const { searchParams } = new URL(_request.url);
     
     // Parse query parameters
-    const params: any = {};
+    const params: Record<string, string | number> = {};
     if (searchParams.get('limit')) {
       params.limit = parseInt(searchParams.get('limit')!, 10);
     }
@@ -29,13 +31,13 @@ export async function GET(request: NextRequest) {
       params.since_id = parseInt(searchParams.get('since_id')!, 10);
     }
     if (searchParams.get('fields')) {
-      params.fields = searchParams.get('fields');
+      params.fields = searchParams.get('fields')!;
     }
 
     console.log('Fetching products with params:', params);
     
     // Initialize Shopify API
-    const shopify = new ShopifyAPI();
+    const shopify = createShopifyClient();
     
     // Fetch all products
     const response = await shopify.getAllProducts(params);
@@ -54,6 +56,19 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Error fetching products:', error);
     
+    if (error instanceof ShopifyApiError) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Shopify API Error',
+          message: error.message,
+          status: error.status,
+          errors: error.errors
+        },
+        { status: error.status || 500 }
+      );
+    }
+    
     // Return specific error message
     const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
     
@@ -68,53 +83,13 @@ export async function GET(request: NextRequest) {
 }
 
 // POST - Create a new product
-export async function POST(request: NextRequest) {
-  try {
-    console.log('POST /api/shopify/products - Starting request');
-    
-    // Check for required environment variables
-    if (!process.env.SHOPIFY_STORE_URL || !process.env.SHOPIFY_ACCESS_TOKEN) {
-      console.error('Missing required environment variables');
-      return NextResponse.json(
-        { 
-          success: false, 
-          message: 'Missing required environment variables' 
-        },
-        { status: 500 }
-      );
-    }
-
-    const body = await request.json();
-    console.log('Creating product with data:', body);
-    
-    // Initialize Shopify API
-    const shopify = new ShopifyAPI();
-    
-    // Create the product
-    const response = await shopify.createProduct(body);
-    
-    console.log('Successfully created product:', response.product.id);
-    
-    return NextResponse.json({
-      success: true,
-      data: {
-        product: response.product
-      },
-      message: 'Product created successfully'
-    });
-
-  } catch (error) {
-    console.error('Error creating product:', error);
-    
-    // Return specific error message
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-    
-    return NextResponse.json(
-      { 
-        success: false, 
-        message: `Failed to create product: ${errorMessage}` 
-      },
-      { status: 500 }
-    );
-  }
+// Note: Product creation is not implemented in this pricing-focused app
+export async function POST(_request: NextRequest) {
+  return NextResponse.json(
+    { 
+      success: false, 
+      message: 'Product creation is not supported in this pricing app. Use Shopify admin to create products.' 
+    },
+    { status: 501 } // Not Implemented
+  );
 }

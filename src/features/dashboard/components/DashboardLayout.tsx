@@ -1,13 +1,8 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, ErrorBoundary } from "@/shared/components";
 import { 
-  TrendingUp, 
   Target, 
-  BarChart3,
   Settings,
-  Zap,
-  Calendar
+  Zap
 } from "lucide-react";
 
 interface DashboardLayoutProps {
@@ -49,7 +44,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       </header>
 
       <div className="p-6 space-y-6">
-        {children}
+        <ErrorBoundary level="feature">
+          {children}
+        </ErrorBoundary>
       </div>
     </div>
   );

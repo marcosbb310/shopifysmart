@@ -4,7 +4,15 @@
 // Shopify API utilities
 export * from './shopify-api';
 
+// Environment validation utilities
+export * from './env-validation';
+
+// Application initialization utilities
+export * from './app-init';
+
+// Mock data utilities
+export * from './mock-data';
+
 // Example: export { formatCurrency } from './formatting'
-// Example: export { validateEmail } from './validation'
 
 // Utilities will be exported here as they are created

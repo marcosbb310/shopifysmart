@@ -31,7 +31,7 @@ const updateProductRequestSchema = z.object({
 });
 
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ productId: string }> }
 ) {
   try {
@@ -133,7 +133,7 @@ export async function PUT(
             path: issue.path.join('.'),
             message: issue.message,
             code: issue.code,
-            ...(('received' in issue) && { received: (issue as any).received })
+            ...(('received' in issue) && { received: (issue as { received: unknown }).received })
           }))
         },
         { status: 400 }
@@ -143,13 +143,21 @@ export async function PUT(
     const { product, variants } = validationResult.data;
     const shopifyClient = createShopifyClient();
     
-    const results: any = {};
+    const results: {
+      product?: unknown;
+      variants?: unknown[];
+    } = {};
 
     // Update product if provided
     if (product) {
+      // Filter out undefined values to satisfy exactOptionalPropertyTypes
+      const cleanProduct = Object.fromEntries(
+        Object.entries(product).filter(([_, value]) => value !== undefined)
+      );
+      
       const productUpdateResponse = await shopifyClient.updateProduct(
         parseInt(productId),
-        product
+        cleanProduct
       );
       results.product = productUpdateResponse.product;
     }
@@ -159,9 +167,14 @@ export async function PUT(
       results.variants = [];
       
       for (const variant of variants) {
+        // Filter out undefined values to satisfy exactOptionalPropertyTypes
+        const cleanVariant = Object.fromEntries(
+          Object.entries(variant).filter(([_, value]) => value !== undefined)
+        );
+        
         const variantUpdateResponse = await shopifyClient.updateVariant(
           variant.id,
-          variant
+          cleanVariant
         );
         results.variants.push(variantUpdateResponse.variant);
       }

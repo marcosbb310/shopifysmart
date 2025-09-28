@@ -1,17 +1,11 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, Button, Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components";
 import { 
   Settings, 
   TrendingUp, 
   TrendingDown, 
   DollarSign,
-  Package,
   CheckCircle,
   AlertTriangle,
   Calculator,
@@ -32,7 +26,7 @@ interface BulkActionsProps {
 
 export function BulkActions({ 
   selectedProducts, 
-  onBulkPriceUpdate, 
+  onBulkPriceUpdate: _onBulkPriceUpdate, 
   onBulkPricingUpdate,
   onBulkApplyRecommendations,
   onClearSelection 
@@ -54,12 +48,13 @@ export function BulkActions({
     onBulkPricingUpdate(selectedField, changeType, value);
   };
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(price);
-  };
+  // TODO: Use formatPrice when implementing price display
+  // const formatPrice = (price: number) => {
+  //   return new Intl.NumberFormat('en-US', {
+  //     style: 'currency',
+  //     currency: 'USD'
+  //   }).format(price);
+  // };
 
   if (selectedProducts.length === 0) {
     return null;
@@ -189,8 +184,8 @@ export function BulkActions({
                 <Input
                   type="number"
                   placeholder="0"
-                  value={priceChange}
-                  onChange={(e) => setPriceChange(Number(e.target.value))}
+                  value={priceChange === 0 ? '' : priceChange}
+                  onChange={(e) => setPriceChange(e.target.value === '' ? 0 : Number(e.target.value))}
                   className="w-full"
                   min={-100}
                   max={100}
@@ -200,8 +195,8 @@ export function BulkActions({
                 <Input
                   type="number"
                   placeholder="0.00"
-                  value={fixedPrice}
-                  onChange={(e) => setFixedPrice(Number(e.target.value))}
+                  value={fixedPrice === 0 ? '' : fixedPrice}
+                  onChange={(e) => setFixedPrice(e.target.value === '' ? 0 : Number(e.target.value))}
                   className="w-full"
                   step={0.01}
                 />

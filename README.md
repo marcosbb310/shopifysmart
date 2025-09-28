@@ -60,10 +60,18 @@ src/
    ```
 
 3. **Set up environment variables**
+   Create a `.env.local` file in the root directory with the following variables:
    ```bash
-   cp .env.example .env.local
-   # Fill in your actual values
+   # Required Shopify API Configuration
+   SHOPIFY_ACCESS_TOKEN=your_access_token_here
+   SHOPIFY_CLIENT_SECRET=your_client_secret_here
+   SHOPIFY_CLIENT_ID=your_client_id_here
+   
+   # Optional: Your Shopify store domain (defaults to 1t0yf8-7e.myshopify.com)
+   SHOPIFY_SHOP_DOMAIN=your-store.myshopify.com
    ```
+   
+   **Note**: You need to create a Shopify app and get these credentials from your Shopify Partner Dashboard.
 
 4. **Start development server**
    ```bash

@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/components";
 
 interface WeeklyData {
   day: string;
@@ -23,7 +23,7 @@ export function WeeklyPerformance({ data }: WeeklyPerformanceProps) {
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
-          {data.map((day, index) => (
+          {data.map((day, _index) => (
             <div key={day.day} className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700 rounded-lg">
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-slate-200 dark:bg-slate-600 rounded-full flex items-center justify-center text-xs font-medium">

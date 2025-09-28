@@ -4,14 +4,7 @@ import { useState } from "react";
 import { ProductList } from "./ProductList";
 import { ProductFilters } from "./ProductFilters";
 import { BulkActions } from "./BulkActions";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Button, Badge, Switch, Popover, PopoverContent, PopoverTrigger } from "@/shared/components";
 import { 
   Filter, 
   Grid, 
@@ -36,6 +29,7 @@ interface ProductsLayoutProps {
   onBulkUpdate: (productIds: string[], priceChange: number, type: 'percentage' | 'fixed') => void;
   onBulkPricingUpdate: (field: string, type: 'percentage' | 'fixed', value: number) => void;
   onBulkApplyRecommendations: (productIds: string[]) => void;
+  isUpdating?: boolean;
 }
 
 export function ProductsLayout({ 
@@ -50,7 +44,8 @@ export function ProductsLayout({
   onGlobalSmartPricingToggle,
   onBulkUpdate,
   onBulkPricingUpdate,
-  onBulkApplyRecommendations 
+  onBulkApplyRecommendations,
+  isUpdating = false
 }: ProductsLayoutProps) {
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
@@ -101,13 +96,14 @@ export function ProductsLayout({
   console.log('ProductsLayout - Filtered products:', filteredProducts.length);
   console.log('ProductsLayout - Product titles:', products.map(p => p.title));
 
-  const handleProductSelection = (productId: string, selected: boolean) => {
-    if (selected) {
-      setSelectedProducts(prev => [...prev, productId]);
-    } else {
-      setSelectedProducts(prev => prev.filter(id => id !== productId));
-    }
-  };
+  // TODO: Use handleProductSelection when implementing product selection
+  // const handleProductSelection = (productId: string, selected: boolean) => {
+  //   if (selected) {
+  //     setSelectedProducts(prev => [...prev, productId]);
+  //   } else {
+  //     setSelectedProducts(prev => prev.filter(id => id !== productId));
+  //   }
+  // };
 
   const handleSelectAll = () => {
     if (selectedProducts.length === filteredProducts.length) {
@@ -163,8 +159,14 @@ export function ProductsLayout({
                 checked={globalSmartPricing}
                 onCheckedChange={onGlobalSmartPricingToggle}
                 className="data-[state=checked]:bg-emerald-600"
+                disabled={isUpdating}
               />
             </div>
+            {isUpdating && (
+              <Badge variant="secondary" className="bg-blue-100 text-blue-800 dark:bg-blue-700 dark:text-blue-200 animate-pulse">
+                Syncing to Shopify...
+              </Badge>
+            )}
             <Button variant="outline" size="sm">
               <Download className="w-4 h-4 mr-1" />
               Export

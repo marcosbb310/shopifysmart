@@ -1,5 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, Button } from "@/shared/components";
 import { Target, Calendar, BarChart3 } from "lucide-react";
 
 export function QuickActions() {

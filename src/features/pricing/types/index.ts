@@ -4,17 +4,17 @@ export interface ProductVariant {
   id: string;
   title: string;
   price: number;
-  compareAtPrice?: number;
+  compareAtPrice?: number | undefined;
   inventory: number;
-  sku?: string;
-  barcode?: string;
-  weight?: number;
-  weightUnit?: string;
+  sku?: string | undefined;
+  barcode?: string | undefined;
+  weight?: number | undefined;
+  weightUnit?: string | undefined;
   requiresShipping: boolean;
   taxable: boolean;
-  option1?: string;
-  option2?: string;
-  option3?: string;
+  option1?: string | undefined;
+  option2?: string | undefined;
+  option3?: string | undefined;
 }
 
 export interface Product {
@@ -22,18 +22,18 @@ export interface Product {
   title: string;
   handle: string;
   currentPrice: number;
-  costPrice?: number;
-  compareAtPrice?: number;
+  costPrice?: number | undefined;
+  compareAtPrice?: number | undefined;
   basePrice: number; // Minimum price the product can go
   maxPrice: number; // Maximum price the product can go
   inventory: number;
   category: string;
   tags: string[];
   vendor: string;
-  imageUrl?: string; // Product image URL
+  imageUrl?: string | undefined; // Product image URL
   smartPricingEnabled: boolean; // Whether smart pricing is enabled for this product
-  variants?: ProductVariant[]; // Product variants (size, color, etc.)
-  options?: ProductOption[]; // Product options (Size, Color, etc.)
+  variants?: ProductVariant[] | undefined; // Product variants (size, color, etc.)
+  options?: ProductOption[] | undefined; // Product options (Size, Color, etc.)
   createdAt: Date;
   updatedAt: Date;
 }

@@ -1,27 +1,15 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
+import { Card, CardContent, Badge, Button, Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Switch, ErrorBoundary } from "@/shared/components";
 import { 
   Search, 
-  Filter, 
-  TrendingUp, 
-  TrendingDown, 
-  DollarSign, 
   Package,
   Settings,
   CheckCircle,
-  AlertCircle,
   Image as ImageIcon,
-  Minus,
-  Plus,
   Zap
 } from "lucide-react";
-import { Product, PricingRecommendation, ProductVariant } from "../../pricing/types";
+import { Product, PricingRecommendation, ProductVariant } from "@/features/pricing/types";
 import { PriceInput } from "./PriceInput";
 import { useState } from "react";
 
@@ -45,7 +33,7 @@ export function ProductList({
   onBasePriceUpdate,
   onMaxPriceUpdate,
   onSmartPricingToggle,
-  onBulkUpdate, 
+  onBulkUpdate: _onBulkUpdate, 
   viewMode = 'list' 
 }: ProductListProps) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -154,7 +142,8 @@ export function ProductList({
 
 
   return (
-    <div className="space-y-6">
+    <ErrorBoundary level="feature">
+      <div className="space-y-6">
       {/* Header and Controls */}
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div>
@@ -683,6 +672,7 @@ export function ProductList({
           </CardContent>
         </Card>
       )}
-    </div>
+      </div>
+    </ErrorBoundary>
   );
 }

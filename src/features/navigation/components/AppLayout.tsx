@@ -1,12 +1,10 @@
 "use client";
 
-import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarInset, SidebarTrigger, ErrorBoundary } from "@/shared/components";
 import { AppNavigation } from "./AppNavigation";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@/shared/components";
 import { 
   Settings, 
-  Zap, 
   Bell,
   User
 } from "lucide-react";
@@ -18,7 +16,9 @@ interface AppLayoutProps {
 export function AppLayout({ children }: AppLayoutProps) {
   return (
     <SidebarProvider>
-      <AppNavigation />
+      <ErrorBoundary level="component">
+        <AppNavigation />
+      </ErrorBoundary>
       <SidebarInset>
         {/* Header */}
         <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
@@ -43,8 +43,10 @@ export function AppLayout({ children }: AppLayoutProps) {
         </header>
 
         {/* Main Content */}
-        <div className="flex flex-1 flex-col gap-4 p-4">
-          {children}
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-6">
+          <ErrorBoundary level="page">
+            {children}
+          </ErrorBoundary>
         </div>
       </SidebarInset>
     </SidebarProvider>

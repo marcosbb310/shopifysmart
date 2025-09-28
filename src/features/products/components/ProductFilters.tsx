@@ -1,15 +1,8 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Slider } from "@/components/ui/slider";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Card, CardContent, CardHeader, CardTitle, Button, Badge, Slider, Checkbox } from "@/shared/components";
 import { 
   Filter, 
   X, 
-  DollarSign, 
   Package,
-  TrendingUp,
-  TrendingDown,
   Tag,
   SlidersHorizontal
 } from "lucide-react";
@@ -33,9 +26,9 @@ interface ProductFiltersProps {
 }
 
 export function ProductFilters({
-  categories,
-  selectedCategories,
-  onCategoryChange,
+  categories: _categories,
+  selectedCategories: _selectedCategories,
+  onCategoryChange: _onCategoryChange,
   tags,
   selectedTags,
   onTagChange,
@@ -49,13 +42,14 @@ export function ProductFilters({
   onRecommendationsChange,
   onClearFilters
 }: ProductFiltersProps) {
-  const handleCategoryToggle = (category: string) => {
-    if (selectedCategories.includes(category)) {
-      onCategoryChange(selectedCategories.filter(c => c !== category));
-    } else {
-      onCategoryChange([...selectedCategories, category]);
-    }
-  };
+  // TODO: Use handleCategoryToggle when implementing category filtering
+  // const handleCategoryToggle = (category: string) => {
+  //   if (selectedCategories.includes(category)) {
+  //     onCategoryChange(selectedCategories.filter(c => c !== category));
+  //   } else {
+  //     onCategoryChange([...selectedCategories, category]);
+  //   }
+  // };
 
   const handleTagToggle = (tag: string) => {
     if (selectedTags.includes(tag)) {

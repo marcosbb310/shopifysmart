@@ -4,15 +4,7 @@ import { useState, useEffect } from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
+import { Card, CardContent, CardHeader, CardTitle, Button, Input, Badge, Switch, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Label, Textarea, Separator } from "@/shared/components";
 import { toast } from "sonner";
 import { 
   Save, 
@@ -25,7 +17,7 @@ import {
   Weight,
   Info
 } from "lucide-react";
-import { ShopifyProduct, ShopifyVariant } from "@/shared/types";
+import { ShopifyProduct } from "@/shared/types";
 
 // Validation schemas
 const productEditSchema = z.object({
@@ -382,7 +374,7 @@ export function ProductEditForm({ product, onSave, isLoading = false }: ProductE
                       />
                       <Select 
                         value={watchedValues.variants[index]?.weight_unit || "lb"}
-                        onValueChange={(value) => {
+                        onValueChange={(_value) => {
                           // This would need custom handling for updating the weight_unit
                           // For now, it's read-only
                         }}

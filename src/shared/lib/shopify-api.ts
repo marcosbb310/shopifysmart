@@ -1,7 +1,8 @@
 // Shopify API client and utilities
 // Reusable functions for Shopify integration
 
-import { ShopifyProductsResponse, ShopifyApiErrorResponse, ShopifyApiConfig, ShopifyProduct } from '../types';
+import { ShopifyProductsResponse, ShopifyApiErrorResponse, ShopifyApiConfig, ShopifyProduct, ShopifyVariant } from '../types';
+import { getShopifyConfig } from './env-validation';
 
 export class ShopifyApiError extends Error {
   constructor(
@@ -130,7 +131,7 @@ export class ShopifyApiClient {
       const response = await this.getProducts({
         ...params,
         limit,
-        since_id: sinceId,
+        ...(sinceId !== undefined && { since_id: sinceId }),
       });
 
       allProducts.push(...response.products);
@@ -202,19 +203,7 @@ export class ShopifyApiClient {
 }
 
 export function createShopifyClient(): ShopifyApiClient {
-  const config: ShopifyApiConfig = {
-    accessToken: process.env.SHOPIFY_ACCESS_TOKEN!,
-    clientSecret: process.env.SHOPIFY_CLIENT_SECRET!,
-    clientId: process.env.SHOPIFY_CLIENT_ID!,
-    shopDomain: process.env.SHOPIFY_SHOP_DOMAIN || '1t0yf8-7e.myshopify.com',
-  };
-
-  // Validate required environment variables
-  if (!config.accessToken || !config.clientSecret || !config.clientId) {
-    throw new Error(
-      'Missing required Shopify environment variables: SHOPIFY_ACCESS_TOKEN, SHOPIFY_CLIENT_SECRET, SHOPIFY_CLIENT_ID'
-    );
-  }
+  const config = getShopifyConfig();
 
   return new ShopifyApiClient(config);
 }

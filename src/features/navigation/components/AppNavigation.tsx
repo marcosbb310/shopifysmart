@@ -14,9 +14,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuBadge,
-} from "@/components/ui/sidebar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+} from "@/shared/components";
+import { Button } from "@/shared/components";
 import {
   LayoutDashboard,
   Package,
