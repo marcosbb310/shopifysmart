@@ -5,7 +5,7 @@ import {
   TopProducts, 
   QuickActions 
 } from "@/features/dashboard";
-import { mockTopProducts, mockWeeklyData } from "@/shared/lib";
+// Removed mock data imports - using real Shopify API data only
 
 export default function DashboardPage() {
   return (
@@ -17,11 +17,11 @@ export default function DashboardPage() {
           smartRevenue={980000}
           percentageIncrease={22.5}
         />
-        <WeeklyPerformance data={mockWeeklyData} />
+        <WeeklyPerformance data={[]} />
       </div>
-
-      {/* Top Products */}
-      <TopProducts products={mockTopProducts} />
+      
+      {/* Top Products - TODO: Fetch real data from Shopify API */}
+      <TopProducts products={[]} />
 
       {/* Quick Actions */}
       <QuickActions />

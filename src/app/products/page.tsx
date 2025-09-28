@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { AppLayout } from "@/features/navigation";
 import { ProductsLayout } from "@/features/products";
 import { Product } from "@/features/pricing/types";
-import { mockProducts, mockRecommendations } from "@/shared/lib";
+// Removed mock data imports - using real Shopify API data only
 
 // Function to convert Shopify product to our Product interface
 const convertShopifyProduct = (shopifyProduct: any): Product => {
@@ -80,9 +80,8 @@ export default function ProductsPage() {
       } catch (err) {
         console.error('Error fetching products:', err);
         setError(err instanceof Error ? err.message : 'Failed to fetch products');
-        // Fallback to mock data if API fails
-        console.log('Falling back to mock data due to error');
-        setProducts(mockProducts);
+        // No fallback to mock data - show proper error state
+        setProducts([]);
       } finally {
         setLoading(false);
       }
@@ -105,16 +104,32 @@ export default function ProductsPage() {
     );
   }
 
-  // Show error state (with fallback to mock data)
+  // Show error state
   if (error) {
-    console.warn('Using fallback mock data due to error:', error);
+    return (
+      <AppLayout>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="text-red-500 text-6xl mb-4">⚠️</div>
+            <h2 className="text-2xl font-bold text-foreground mb-2">Failed to Load Products</h2>
+            <p className="text-muted-foreground mb-4">{error}</p>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </AppLayout>
+    );
   }
 
   return (
     <AppLayout>
       <ProductsLayout
         products={products}
-        recommendations={mockRecommendations}
+        recommendations={[]} // No mock recommendations - will be generated from real data
         globalSmartPricing={globalSmartPricing}
         onPriceUpdate={() => {}}
         onCostUpdate={() => {}}

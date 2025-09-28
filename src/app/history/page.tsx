@@ -12,7 +12,7 @@ import {
   CheckCircle,
   // AlertCircle, // TODO: Use when implementing alert indicators
 } from "lucide-react";
-import { mockRecentReports, mockReportCategories } from "@/shared/lib";
+import { mockReportCategories } from "@/shared/lib"; // Only keeping UI configuration data
 
 export default function HistoryPage() {
   return (
@@ -120,7 +120,7 @@ export default function HistoryPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {mockRecentReports.map((report) => (
+                {[].map((report) => (
                   <div key={report.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
                     <div className="flex items-center space-x-4">
                       <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">

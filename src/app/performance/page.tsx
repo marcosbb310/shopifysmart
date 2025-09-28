@@ -10,7 +10,7 @@ import {
   Filter,
   Download,
 } from "lucide-react";
-import { mockPerformanceMetrics, mockTopPerformingProducts } from "@/shared/lib";
+// Removed mock data imports - using real Shopify API data only
 
 // TODO: Use revenueData when implementing revenue charts
 // const revenueData = [
@@ -51,7 +51,7 @@ export default function PerformancePage() {
 
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {mockPerformanceMetrics.map((metric) => (
+        {[].map((metric) => (
           <Card key={metric.title}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -117,7 +117,7 @@ export default function PerformancePage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {mockTopPerformingProducts.map((product, index) => (
+            {[].map((product, index) => (
               <div key={product.name} className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="flex items-center space-x-4">
                   <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
