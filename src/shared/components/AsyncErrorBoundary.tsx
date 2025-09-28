@@ -3,6 +3,7 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui';
 import { Button } from '@/components/ui';
+import { mockNetworkErrorMessages } from '@/shared/lib';
 import { AlertTriangle, RefreshCw, Wifi, WifiOff } from 'lucide-react';
 
 interface AsyncErrorBoundaryState {

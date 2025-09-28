@@ -15,6 +15,7 @@ import {
   Receipt
 } from "lucide-react";
 import { useState } from "react";
+import { mockPricingFields } from "@/shared/lib";
 
 interface BulkActionsProps {
   selectedProducts: string[];
@@ -36,12 +37,18 @@ export function BulkActions({
   const [fixedPrice, setFixedPrice] = useState(0);
   const [selectedField, setSelectedField] = useState('currentPrice');
 
-  const pricingFields = [
-    { value: 'currentPrice', label: 'Current Price', icon: Banknote },
-    { value: 'basePrice', label: 'Base Price', icon: DollarSign },
-    { value: 'maxPrice', label: 'Max Price', icon: Coins },
-    { value: 'costPrice', label: 'Cost Price', icon: CreditCard },
-  ];
+  // Map centralized mock data to component format with icons
+  const iconMap: { [key: string]: React.ComponentType } = {
+    'Banknote': Banknote,
+    'DollarSign': DollarSign,
+    'Coins': Coins,
+    'CreditCard': CreditCard,
+  };
+
+  const pricingFields = mockPricingFields.map(field => ({
+    ...field,
+    icon: iconMap[field.icon] || Banknote
+  }));
 
   const handleApplyPriceChange = () => {
     const value = changeType === 'percentage' ? priceChange : fixedPrice;

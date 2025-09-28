@@ -666,28 +666,6 @@ export const mockRecommendations: PricingRecommendation[] = [
 // ============================================================================
 
 /**
- * Get mock data by type with optional filtering
- */
-export function getMockData<T>(dataType: 'topProducts' | 'weeklyData' | 'performanceMetrics' | 'recentReports' | 'products' | 'recommendations'): T[] {
-  switch (dataType) {
-    case 'topProducts':
-      return mockTopProducts as T[];
-    case 'weeklyData':
-      return mockWeeklyData as T[];
-    case 'performanceMetrics':
-      return mockPerformanceMetrics as T[];
-    case 'recentReports':
-      return mockRecentReports as T[];
-    case 'products':
-      return mockProducts as T[];
-    case 'recommendations':
-      return mockRecommendations as T[];
-    default:
-      return [] as T[];
-  }
-}
-
-/**
  * Get a specific mock product by ID
  */
 export function getMockProduct(productId: string): Product | undefined {
@@ -701,9 +679,213 @@ export function getMockRecommendationsForProduct(productId: string): PricingReco
   return mockRecommendations.filter(rec => rec.productId === productId);
 }
 
+// ============================================================================
+// UI COMPONENT MOCK DATA
+// ============================================================================
+
+export interface TopPerformingProduct {
+  name: string;
+  revenue: string;
+  unitsSold: number;
+  priceChange: string;
+  impact: string;
+}
+
+export interface ReportCategory {
+  name: string;
+  count: number;
+  active: boolean;
+}
+
+export interface NavigationItem {
+  title: string;
+  items: {
+    title: string;
+    href: string;
+    icon: string; // Icon name as string, will be mapped in component
+    description: string;
+  }[];
+}
+
+export interface PricingField {
+  value: string;
+  label: string;
+  icon: string; // Icon name as string, will be mapped in component
+}
+
+export interface NetworkErrorMessage {
+  type: string;
+  message: string;
+  suggestion: string;
+}
+
+// Performance Page Mock Data
+export const mockTopPerformingProducts: TopPerformingProduct[] = [
+  {
+    name: "Premium Wireless Headphones",
+    revenue: "$24,580",
+    unitsSold: 156,
+    priceChange: "+10.0%",
+    impact: "+$2,458"
+  },
+  {
+    name: "Organic Cotton T-Shirt",
+    revenue: "$8,420",
+    unitsSold: 89,
+    priceChange: "+16.7%",
+    impact: "+$1,206"
+  },
+  {
+    name: "Stainless Steel Water Bottle",
+    revenue: "$4,890",
+    unitsSold: 67,
+    priceChange: "+12.0%",
+    impact: "+$587"
+  }
+];
+
+// History Page Mock Data
+export const mockReportCategories: ReportCategory[] = [
+  { name: "All Reports", count: 24, active: true },
+  { name: "Performance", count: 8, active: false },
+  { name: "Optimization", count: 6, active: false },
+  { name: "Analysis", count: 5, active: false },
+  { name: "Summary", count: 5, active: false }
+];
+
+// Navigation Mock Data
+export const mockNavigationItems: NavigationItem[] = [
+  {
+    title: "Overview",
+    items: [
+      {
+        title: "Dashboard",
+        href: "/dashboard",
+        icon: "LayoutDashboard", // Will be imported in component
+        description: "Revenue overview and key metrics",
+      },
+    ],
+  },
+  {
+    title: "Pricing",
+    items: [
+      {
+        title: "Products",
+        href: "/products",
+        icon: "Package", // Will be imported in component
+        description: "Manage products and pricing",
+      },
+    ],
+  },
+  {
+    title: "Analytics",
+    items: [
+      {
+        title: "Performance",
+        href: "/performance",
+        icon: "BarChart3", // Will be imported in component
+        description: "View performance metrics and trends",
+      },
+      {
+        title: "History",
+        href: "/history",
+        icon: "FileText", // Will be imported in component
+        description: "Browse historical reports",
+      },
+    ],
+  },
+];
+
+// Bulk Actions Mock Data
+export const mockPricingFields: PricingField[] = [
+  { value: 'currentPrice', label: 'Current Price', icon: 'Banknote' },
+  { value: 'basePrice', label: 'Base Price', icon: 'DollarSign' },
+  { value: 'maxPrice', label: 'Max Price', icon: 'Coins' },
+  { value: 'costPrice', label: 'Cost Price', icon: 'CreditCard' },
+];
+
+// Error Boundary Mock Data
+export const mockNetworkErrorMessages: NetworkErrorMessage[] = [
+  {
+    type: "connection",
+    message: "Unable to connect to server",
+    suggestion: "Check your internet connection and try again"
+  },
+  {
+    type: "timeout",
+    message: "Request timed out",
+    suggestion: "The server is taking longer than expected. Please try again."
+  },
+  {
+    type: "server",
+    message: "Server error occurred",
+    suggestion: "Something went wrong on our end. Please try again later."
+  }
+];
+
+// ============================================================================
+// ENHANCED MOCK DATA UTILITIES
+// ============================================================================
+
 /**
- * Check if mock data should be used (development mode or API failure)
+ * Get mock data by type with optional filtering
  */
-export function shouldUseMockData(): boolean {
-  return process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
+export function getMockData<T>(dataType: 'topProducts' | 'weeklyData' | 'performanceMetrics' | 'recentReports' | 'products' | 'recommendations' | 'topPerformingProducts' | 'reportCategories' | 'navigationItems' | 'pricingFields' | 'networkErrorMessages'): T[] {
+  switch (dataType) {
+    case 'topProducts':
+      return mockTopProducts as T[];
+    case 'weeklyData':
+      return mockWeeklyData as T[];
+    case 'performanceMetrics':
+      return mockPerformanceMetrics as T[];
+    case 'recentReports':
+      return mockRecentReports as T[];
+    case 'products':
+      return mockProducts as T[];
+    case 'recommendations':
+      return mockRecommendations as T[];
+    case 'topPerformingProducts':
+      return mockTopPerformingProducts as T[];
+    case 'reportCategories':
+      return mockReportCategories as T[];
+    case 'navigationItems':
+      return mockNavigationItems as T[];
+    case 'pricingFields':
+      return mockPricingFields as T[];
+    case 'networkErrorMessages':
+      return mockNetworkErrorMessages as T[];
+    default:
+      return [] as T[];
+  }
+}
+
+/**
+ * Get mock navigation items by section
+ */
+export function getMockNavigationBySection(sectionTitle: string): NavigationItem | undefined {
+  return mockNavigationItems.find(item => item.title === sectionTitle);
+}
+
+/**
+ * Get mock report categories with active state
+ */
+export function getMockReportCategoriesWithActive(activeCategory: string): ReportCategory[] {
+  return mockReportCategories.map(category => ({
+    ...category,
+    active: category.name === activeCategory
+  }));
+}
+
+/**
+ * Get mock pricing fields by value
+ */
+export function getMockPricingFieldByValue(value: string): PricingField | undefined {
+  return mockPricingFields.find(field => field.value === value);
+}
+
+/**
+ * Get mock network error message by type
+ */
+export function getMockNetworkErrorByType(type: string): NetworkErrorMessage | undefined {
+  return mockNetworkErrorMessages.find(error => error.type === type);
 }

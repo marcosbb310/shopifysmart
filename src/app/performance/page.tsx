@@ -10,31 +10,7 @@ import {
   Filter,
   Download,
 } from "lucide-react";
-import { mockPerformanceMetrics } from "@/shared/lib";
-
-const topPerformingProducts = [
-  {
-    name: "Premium Wireless Headphones",
-    revenue: "$24,580",
-    unitsSold: 156,
-    priceChange: "+10.0%",
-    impact: "+$2,458"
-  },
-  {
-    name: "Organic Cotton T-Shirt",
-    revenue: "$8,420",
-    unitsSold: 89,
-    priceChange: "+16.7%",
-    impact: "+$1,206"
-  },
-  {
-    name: "Stainless Steel Water Bottle",
-    revenue: "$4,890",
-    unitsSold: 67,
-    priceChange: "+12.0%",
-    impact: "+$587"
-  }
-];
+import { mockPerformanceMetrics, mockTopPerformingProducts } from "@/shared/lib";
 
 // TODO: Use revenueData when implementing revenue charts
 // const revenueData = [
@@ -141,7 +117,7 @@ export default function PerformancePage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {topPerformingProducts.map((product, index) => (
+            {mockTopPerformingProducts.map((product, index) => (
               <div key={product.name} className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="flex items-center space-x-4">
                   <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">

@@ -12,15 +12,7 @@ import {
   CheckCircle,
   // AlertCircle, // TODO: Use when implementing alert indicators
 } from "lucide-react";
-import { mockRecentReports } from "@/shared/lib";
-
-const reportCategories = [
-  { name: "All Reports", count: 24, active: true },
-  { name: "Performance", count: 8, active: false },
-  { name: "Optimization", count: 6, active: false },
-  { name: "Analysis", count: 5, active: false },
-  { name: "Summary", count: 5, active: false }
-];
+import { mockRecentReports, mockReportCategories } from "@/shared/lib";
 
 export default function HistoryPage() {
   return (
@@ -62,7 +54,7 @@ export default function HistoryPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
-              {reportCategories.map((category) => (
+              {mockReportCategories.map((category) => (
                 <Button
                   key={category.name}
                   variant={category.active ? "default" : "ghost"}
