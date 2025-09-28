@@ -1,6 +1,4 @@
-import { Button } from "@/shared/components";
-import { Card, CardDescription, CardHeader, CardTitle } from "@/shared/components";
-import { Badge } from "@/shared/components";
+import { Button, Card, CardDescription, CardHeader, CardTitle, Badge } from "@/components/ui";
 import { ArrowRight, TrendingUp, Target, Zap, BarChart3, Shield, Clock } from "lucide-react";
 
 export default function Home() {

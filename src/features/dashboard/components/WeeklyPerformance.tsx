@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/components";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui";
 
 interface WeeklyData {
   day: string;

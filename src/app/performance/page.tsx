@@ -1,5 +1,5 @@
 import { AppLayout } from "@/features/navigation";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, Badge, Button } from "@/shared/components";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, Badge, Button } from "@/components/ui";
 import {
   BarChart3,
   TrendingUp,

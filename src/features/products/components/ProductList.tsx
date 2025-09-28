@@ -1,6 +1,7 @@
 "use client";
 
-import { Card, CardContent, Badge, Button, Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Switch, ErrorBoundary } from "@/shared/components";
+import { Card, CardContent, Badge, Button, Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Switch } from "@/components/ui";
+import { ErrorBoundary } from "@/shared/components";
 import { 
   Search, 
   Package,

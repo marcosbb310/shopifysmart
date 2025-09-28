@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle, Button, Badge, Slider, Checkbox } from "@/shared/components";
+import { Card, CardContent, CardHeader, CardTitle, Button, Badge, Slider, Checkbox } from "@/components/ui";
 import { 
   Filter, 
   X, 

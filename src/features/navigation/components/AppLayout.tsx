@@ -1,8 +1,9 @@
 "use client";
 
-import { SidebarProvider, SidebarInset, SidebarTrigger, ErrorBoundary } from "@/shared/components";
+import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui";
+import { ErrorBoundary } from "@/shared/components";
 import { AppNavigation } from "./AppNavigation";
-import { Button } from "@/shared/components";
+import { Button } from "@/components/ui";
 import { 
   Settings, 
   Bell,

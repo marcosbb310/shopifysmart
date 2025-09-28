@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, Badge, Button } from "@/shared/components";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, Badge, Button } from "@/components/ui";
 import { BarChart3 } from "lucide-react";
 
 interface Product {

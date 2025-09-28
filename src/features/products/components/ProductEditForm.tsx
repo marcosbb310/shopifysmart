@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Card, CardContent, CardHeader, CardTitle, Button, Input, Badge, Switch, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Label, Textarea, Separator } from "@/shared/components";
+import { Card, CardContent, CardHeader, CardTitle, Button, Input, Badge, Switch, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Label, Textarea, Separator } from "@/components/ui";
 import { toast } from "sonner";
 import { 
   Save, 

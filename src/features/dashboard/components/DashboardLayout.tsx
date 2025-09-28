@@ -1,4 +1,5 @@
-import { Button, ErrorBoundary } from "@/shared/components";
+import { Button } from "@/components/ui";
+import { ErrorBoundary } from "@/shared/components";
 import { 
   Target, 
   Settings,

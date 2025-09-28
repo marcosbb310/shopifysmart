@@ -38,31 +38,11 @@ const eslintConfig = [
       "@typescript-eslint/explicit-module-boundary-types": "off",
       "@typescript-eslint/no-inferrable-types": "off",
       
-      // Step 1: Basic import restrictions for hybrid structure
+      // Feature isolation: Prevent features from importing from other features directly
       "import/no-restricted-paths": [
         "warn",
         {
           "zones": [
-            {
-              "target": "./src/features/products/components/*",
-              "from": "./src/components/ui",
-              "message": "Feature components should use @/shared/components instead of direct UI imports. Move reusable components to shared/components."
-            },
-            {
-              "target": "./src/features/dashboard/components/*",
-              "from": "./src/components/ui",
-              "message": "Feature components should use @/shared/components instead of direct UI imports. Move reusable components to shared/components."
-            },
-            {
-              "target": "./src/features/performance/components/*",
-              "from": "./src/components/ui",
-              "message": "Feature components should use @/shared/components instead of direct UI imports. Move reusable components to shared/components."
-            },
-            {
-              "target": "./src/features/history/components/*",
-              "from": "./src/components/ui",
-              "message": "Feature components should use @/shared/components instead of direct UI imports. Move reusable components to shared/components."
-            },
             {
               "target": "./src/features/products/components/*",
               "from": "./src/features/dashboard/components/*",
@@ -80,6 +60,26 @@ const eslintConfig = [
             },
             {
               "target": "./src/features/products/components/*",
+              "from": "./src/features/history/components/*",
+              "message": "Feature components should not import from other features directly. Use shared components or feature index files."
+            },
+            {
+              "target": "./src/features/dashboard/components/*",
+              "from": "./src/features/products/components/*",
+              "message": "Feature components should not import from other features directly. Use shared components or feature index files."
+            },
+            {
+              "target": "./src/features/dashboard/components/*",
+              "from": "./src/features/navigation/components/*",
+              "message": "Feature components should not import from other features directly. Use shared components or feature index files."
+            },
+            {
+              "target": "./src/features/dashboard/components/*",
+              "from": "./src/features/performance/components/*",
+              "message": "Feature components should not import from other features directly. Use shared components or feature index files."
+            },
+            {
+              "target": "./src/features/dashboard/components/*",
               "from": "./src/features/history/components/*",
               "message": "Feature components should not import from other features directly. Use shared components or feature index files."
             }

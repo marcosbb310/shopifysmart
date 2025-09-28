@@ -4,10 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { AppLayout } from "@/features/navigation";
 import { ProductEditForm } from "@/features/products";
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components";
-import { Button } from "@/shared/components";
-import { Skeleton } from "@/shared/components";
-import { Alert, AlertDescription, AlertTitle } from "@/shared/components";
+import { Card, CardContent, CardHeader, CardTitle, Button, Skeleton, Alert, AlertDescription, AlertTitle } from "@/components/ui";
 import { 
   ArrowLeft, 
   AlertCircle, 

@@ -1,7 +1,5 @@
-// Shared UI components
-// Reusable components that can be used across features
-
-export * from './ui';
+// Shared business logic components
+// Reusable components that contain business logic
 
 // Error handling components
 export { ErrorBoundary, useErrorHandler, withErrorBoundary } from './ErrorBoundary';

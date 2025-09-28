@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, Badge } from "@/shared/components";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, Badge } from "@/components/ui";
 
 interface RevenueSummaryProps {
   regularRevenue: number;

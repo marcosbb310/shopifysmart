@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Input, Button } from "@/shared/components";
+import { Input, Button } from "@/components/ui";
 import { Check, X, Edit3 } from "lucide-react";
 
 interface PriceInputProps {

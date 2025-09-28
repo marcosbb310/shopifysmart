@@ -4,7 +4,7 @@ import { useState } from "react";
 import { ProductList } from "./ProductList";
 import { ProductFilters } from "./ProductFilters";
 import { BulkActions } from "./BulkActions";
-import { Button, Badge, Switch, Popover, PopoverContent, PopoverTrigger } from "@/shared/components";
+import { Button, Badge, Switch, Popover, PopoverContent, PopoverTrigger } from "@/components/ui";
 import { 
   Filter, 
   Grid, 
